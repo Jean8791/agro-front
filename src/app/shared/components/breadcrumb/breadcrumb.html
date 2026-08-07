@@ -1,0 +1,13 @@
+<nav class="breadcrumb" aria-label="Trilha de navegação">
+  @for (step of steps(); track step.label; let ultimo = $last) {
+    @if (step.url && !ultimo) {
+      <a [routerLink]="step.url">{{ step.label }}</a>
+      <span class="breadcrumb-separador">/</span>
+    } @else {
+      <span class="breadcrumb-atual">{{ step.label }}</span>
+      @if (!ultimo) {
+        <span class="breadcrumb-separador">/</span>
+      }
+    }
+  }
+</nav>

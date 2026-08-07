@@ -1,0 +1,45 @@
+.login-pagina {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 1.5rem;
+}
+
+.login-cartao {
+  width: 100%;
+  max-width: 27rem;
+  overflow: hidden;
+}
+
+h1 {
+  margin: 2px 0 0;
+  font-size: 2rem;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.login-progresso {
+  margin-top: 1.25rem;
+  border-radius: 999px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 1.5rem;
+}
+
+.login-erro {
+  margin: 0 0 1rem;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.login-botao {
+  min-height: 46px;
+  font-weight: 800;
+}

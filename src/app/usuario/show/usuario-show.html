@@ -1,0 +1,74 @@
+<div class="main-content">
+<div class="painel">
+  <div class="painel-cabecalho">
+    <app-breadcrumb [steps]="steps()" />
+  </div>
+
+  @if (loading()) {
+    <app-loader />
+  }
+
+  <div class="painel-corpo">
+    <form [formGroup]="form" (ngSubmit)="salvar()">
+      <div class="linha">
+        <mat-form-field appearance="outline" class="campo-nome">
+          <mat-label>Nome</mat-label>
+          <input matInput formControlName="nome" />
+          @if (form.controls.nome.hasError('required') && form.controls.nome.touched) {
+            <mat-error>Informe o nome</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="campo-email">
+          <mat-label>E-mail</mat-label>
+          <input matInput type="email" formControlName="email" />
+          @if (form.controls.email.hasError('required') && form.controls.email.touched) {
+            <mat-error>Informe o e-mail</mat-error>
+          } @else if (form.controls.email.hasError('email')) {
+            <mat-error>E-mail inválido</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="linha">
+        @if (inserindo()) {
+          <mat-form-field appearance="outline" class="campo-senha">
+            <mat-label>Senha</mat-label>
+            <input matInput type="password" formControlName="senha" autocomplete="new-password" />
+            @if (form.controls.senha.hasError('required') && form.controls.senha.touched) {
+              <mat-error>Informe a senha</mat-error>
+            } @else if (form.controls.senha.hasError('minlength')) {
+              <mat-error>A senha precisa de ao menos 6 caracteres</mat-error>
+            }
+          </mat-form-field>
+        }
+
+        <mat-form-field appearance="outline" class="campo-papel">
+          <mat-label>Papel</mat-label>
+          <mat-select formControlName="papel">
+            @for (papel of papeis; track papel.value) {
+              <mat-option [value]="papel.value">{{ papel.label }}</mat-option>
+            }
+          </mat-select>
+          @if (form.controls.papel.hasError('required') && form.controls.papel.touched) {
+            <mat-error>Selecione o papel</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      @if (!inserindo()) {
+        <p class="aviso">
+          A senha não é alterada por esta tela — o endpoint de edição do back não a recebe.
+        </p>
+      }
+
+      <div class="rodape">
+        <button matButton type="button" (click)="voltar()">Voltar</button>
+        <button matButton="filled" type="submit" [disabled]="salvando()">
+          {{ salvando() ? 'Salvando…' : 'Salvar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+</div>

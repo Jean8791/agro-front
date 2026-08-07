@@ -1,0 +1,25 @@
+.botoeira {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.botoeira-espaco {
+  flex: 1 1 auto;
+}
+
+.campo-pesquisa {
+  min-width: 16rem;
+}
+
+.botao-perigo {
+  --mat-button-outlined-label-text-color: var(--red);
+}
+
+// aplicada pela coluna Situação via `classeDaCelula`
+::ng-deep .situacao-bloqueado {
+  color: var(--red);
+  font-weight: 600;
+}

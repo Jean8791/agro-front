@@ -1,0 +1,26 @@
+.linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.campo-nome,
+.campo-email,
+.campo-senha,
+.campo-papel {
+  flex: 1 1 16rem;
+}
+
+.aviso {
+  margin: 0 0 1rem;
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.rodape {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
