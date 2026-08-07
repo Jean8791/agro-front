@@ -1,0 +1,12 @@
+.inicio-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+.inicio-acao {
+  margin-top: 20px;
+  min-height: 44px;
+  font-weight: 800;
+}
