@@ -1,0 +1,56 @@
+.grid-wrapper {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+// A tabela rola sozinha: a página nunca ganha barra horizontal.
+.grid-rolagem {
+  overflow-x: auto;
+}
+
+// Fundo branco explícito: a paleta verde deixa a superfície padrão do
+// Material esverdeada, e aí a linha selecionada não se destaca.
+table {
+  width: 100%;
+  background: #fff;
+}
+
+th {
+  background: #fff;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.grid-linha {
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--forest-50);
+  }
+}
+
+.grid-linha-selecionada,
+.grid-linha-selecionada:hover {
+  background-color: var(--forest-100);
+}
+
+mat-paginator {
+  background: #fff;
+}
+
+.grid-aviso {
+  margin: 0;
+  padding: 1.75rem 1rem;
+  text-align: center;
+  color: var(--muted);
+}
+
+.grid-aviso.status-red {
+  color: var(--red);
+  font-weight: 600;
+}
+
+mat-paginator {
+  border-top: 1px solid var(--line);
+}

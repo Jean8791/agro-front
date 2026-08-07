@@ -1,0 +1,336 @@
+// Identidade visual herdada do Mini Raio-X do Preço Mínimo: verde floresta
+// sobre fundo creme, cartões de canto largo e sombra difusa. A paleta do
+// Material foi gerada a partir do mesmo #1f6047 (ver styles/_theme-colors),
+// então os componentes prontos saem na mesma cor das classes daqui.
+@use '@angular/material' as mat;
+@use 'styles/theme-colors' as tema;
+
+html {
+  height: 100%;
+  @include mat.theme(
+    (
+      color: (
+        primary: tema.$primary-palette,
+        tertiary: tema.$tertiary-palette,
+      ),
+      typography: Inter,
+      density: 0,
+    )
+  );
+}
+
+:root {
+  --forest-950: #0c2c20;
+  --forest-900: #113b2b;
+  --forest-800: #174a36;
+  --forest-700: #1f6047;
+  --forest-600: #28765a;
+  --forest-100: #dcefe7;
+  --forest-50: #eff8f4;
+  --cream: #f7f4eb;
+  --sand: #e9e2d1;
+  --ink: #17231d;
+  --muted: #5f6f66;
+  --line: #d8dfda;
+  --red: #b93b35;
+  --red-soft: #fbe9e7;
+  --yellow: #b77a08;
+  --yellow-soft: #fff5d9;
+  --green: #21834e;
+  --green-soft: #e6f5ec;
+  --shadow: 0 18px 50px rgba(20, 45, 34, 0.08);
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 10px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  height: 100%;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top right, rgba(61, 130, 94, 0.08), transparent 28rem),
+    var(--cream);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  line-height: 1.5;
+  color-scheme: light;
+}
+
+// ---------------------------------------------------------------- faixa hero
+// Bloco verde de largura total que abre a tela. Os dois círculos em borda
+// translúcida são decoração do original.
+.hero {
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+  background:
+    linear-gradient(125deg, rgba(12, 44, 32, 0.98), rgba(31, 96, 71, 0.94)),
+    var(--forest-900);
+}
+
+.hero::before,
+.hero::after {
+  content: '';
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 50%;
+}
+
+.hero::before {
+  width: 26rem;
+  height: 26rem;
+  top: -14rem;
+  right: -7rem;
+}
+
+.hero::after {
+  width: 14rem;
+  height: 14rem;
+  right: 15%;
+  bottom: -9rem;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 42px 0 46px;
+}
+
+.hero h1 {
+  max-width: 760px;
+  margin: 2px 0 0;
+  font-size: clamp(2rem, 5vw, 3.7rem);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+}
+
+.hero-copy {
+  max-width: 750px;
+  margin: 24px 0 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: clamp(1rem, 2vw, 1.16rem);
+  line-height: 1.65;
+}
+
+.hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.hero-badges span {
+  padding: 8px 12px;
+  color: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.brand-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  flex: 0 0 54px;
+  width: 54px;
+  height: 54px;
+  color: var(--forest-950);
+  background: #bfe4cf;
+  border-radius: 18px 6px 18px 6px;
+  font-size: 0.86rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+}
+
+// Rótulo em caixa-alta espaçada que abre cada bloco.
+.eyebrow {
+  display: block;
+  color: #8fc9aa;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.card .eyebrow,
+.painel .eyebrow {
+  color: var(--forest-600);
+}
+
+// ------------------------------------------------------- conteúdo e cartões
+.main-content {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 34px 0 70px;
+}
+
+.card,
+.painel {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.card {
+  padding: 28px;
+}
+
+// Cabeçalho de cartão: número no quadrado verde + rótulo + pergunta.
+.card-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.card-heading h2 {
+  margin: 2px 0 0;
+  font-size: 1.35rem;
+  letter-spacing: -0.025em;
+}
+
+.step-number {
+  display: grid;
+  place-items: center;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  color: #fff;
+  background: var(--forest-700);
+  border-radius: 14px;
+  font-weight: 900;
+}
+
+.step-number.neutral {
+  color: var(--forest-800);
+  background: var(--forest-100);
+}
+
+// Casca das telas administrativas (grid + botoeira), na mesma linguagem.
+.painel-cabecalho {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.painel-corpo {
+  padding: 24px;
+}
+
+.painel-rodape {
+  padding: 16px 24px;
+  border-top: 1px solid var(--line);
+}
+
+// ------------------------------------------------------------ campos e texto
+.section-intro {
+  max-width: 680px;
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.field-help {
+  color: var(--muted);
+  font-size: 0.71rem;
+  line-height: 1.4;
+}
+
+// Bloco de destaque do resultado, com gradiente verde e valor grande.
+.primary-result {
+  padding: 18px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--forest-900), var(--forest-700));
+  border-radius: 17px;
+
+  span,
+  strong,
+  small {
+    display: block;
+  }
+
+  strong {
+    font-size: 2.1rem;
+    letter-spacing: -0.03em;
+  }
+
+  span {
+    font-size: 0.78rem;
+    opacity: 0.85;
+  }
+
+  small {
+    margin-top: 4px;
+    font-size: 0.72rem;
+    opacity: 0.75;
+  }
+}
+
+// Mini-cartões de indicador (label em cima, valor embaixo).
+.result-metric {
+  padding: 12px 14px;
+  background: #fafbfa;
+  border: 1px solid #e5eae7;
+  border-radius: var(--radius-md);
+
+  span {
+    display: block;
+    color: var(--muted);
+    font-size: 0.72rem;
+  }
+
+  strong {
+    display: block;
+    margin-top: 2px;
+    font-size: 1.05rem;
+  }
+}
+
+// Estados do semáforo, reaproveitados em qualquer indicador.
+.status-red {
+  color: var(--red);
+  background: var(--red-soft);
+}
+
+.status-yellow {
+  color: var(--yellow);
+  background: var(--yellow-soft);
+}
+
+.status-green {
+  color: var(--green);
+  background: var(--green-soft);
+}
+
+@media (max-width: 680px) {
+  .hero-inner {
+    padding: 30px 0 34px;
+  }
+
+  .brand-mark {
+    flex-basis: 46px;
+    width: 46px;
+    height: 46px;
+  }
+
+  .main-content {
+    width: min(100% - 20px, 1180px);
+    padding-top: 18px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+}

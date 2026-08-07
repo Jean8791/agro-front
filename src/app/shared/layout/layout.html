@@ -1,0 +1,32 @@
+<mat-toolbar color="primary">
+  <span class="layout-titulo">Agro</span>
+
+  <nav class="layout-menu">
+    <a matButton routerLink="/inicio" routerLinkActive="layout-link-ativo">Início</a>
+    @if (admin()) {
+      <a matButton routerLink="/usuarios" routerLinkActive="layout-link-ativo">Usuários</a>
+    }
+  </nav>
+
+  <span class="layout-espaco"></span>
+
+  @if (usuario(); as logado) {
+    <span class="layout-conta">
+      <strong>{{ logado.email }}</strong>
+      <small>{{ logado.papel }}</small>
+    </span>
+    <button matIconButton [matMenuTriggerFor]="menu" aria-label="Conta">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="sair()">
+        <mat-icon>logout</mat-icon>
+        <span>Sair</span>
+      </button>
+    </mat-menu>
+  }
+</mat-toolbar>
+
+<main class="layout-conteudo">
+  <router-outlet />
+</main>

@@ -1,0 +1,45 @@
+<div class="main-content">
+  <div class="painel">
+    <div class="painel-cabecalho">
+      <app-breadcrumb [steps]="steps" />
+    </div>
+
+    <div class="painel-corpo">
+      <div class="botoeira">
+        <button matButton="filled" (click)="inserir()">Inserir</button>
+        <button matButton="outlined" (click)="editar()">Editar</button>
+
+        @if (bloqueando()) {
+          <button matButton="outlined" disabled>Aguarde…</button>
+        } @else {
+          <button matButton="outlined" (click)="bloquear()">
+            {{ linhaSelecionada()?.ativo === false ? 'Desbloquear' : 'Bloquear' }}
+          </button>
+        }
+
+        @if (excluindo()) {
+          <button matButton="outlined" disabled>Excluindo…</button>
+        } @else {
+          <button matButton="outlined" class="botao-perigo" (click)="excluir()">Excluir</button>
+        }
+
+        <span class="botoeira-espaco"></span>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-pesquisa">
+          <mat-label>Pesquisar</mat-label>
+          <input matInput [ngModel]="termo()" (ngModelChange)="termo.set($event)" />
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <app-grid
+        [colunas]="colunas"
+        [carregar]="carregar"
+        [filtro]="filtro()"
+        modo="cliente"
+        mensagemVazia="Nenhum usuário encontrado."
+        (selecionou)="linhaSelecionada.set($event)"
+      />
+    </div>
+  </div>
+</div>
