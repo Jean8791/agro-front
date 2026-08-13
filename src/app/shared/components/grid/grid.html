@@ -1,44 +1,96 @@
-<div class="grid-wrapper">
+<div class="grid-cartao cartao">
   @if (carregando()) {
-    <mat-progress-bar mode="indeterminate" />
-  }
-
-  <div class="grid-rolagem">
-    <table mat-table [dataSource]="linhas()" matSort (matSortChange)="ordenar($event)">
-      @for (coluna of colunas(); track coluna.field) {
-        <ng-container [matColumnDef]="coluna.field">
-          @if (coluna.ordenavel) {
-            <th mat-header-cell *matHeaderCellDef mat-sort-header [style.width]="coluna.largura">
-              {{ coluna.titulo }}
-            </th>
-          } @else {
-            <th mat-header-cell *matHeaderCellDef [style.width]="coluna.largura">
-              {{ coluna.titulo }}
-            </th>
-          }
-          <td mat-cell *matCellDef="let linha" [class]="coluna.classe">
-            <span [class]="coluna.classeDaCelula ? coluna.classeDaCelula(linha) : ''">
-              {{ conteudoDaCelula(coluna, linha) }}
-            </span>
-          </td>
-        </ng-container>
+    <!-- Esqueleto no lugar da tabela: o leitor já vê a forma do que vem. -->
+    <div class="grid-esqueleto">
+      @for (barra of esqueleto(); track $index) {
+        <span></span>
       }
+    </div>
+  } @else {
+    <div class="grid-rolagem">
+      <table mat-table [dataSource]="linhas()" matSort (matSortChange)="ordenar($event)">
+        @for (coluna of colunas(); track coluna.field) {
+          <ng-container [matColumnDef]="coluna.field">
+            @if (coluna.ordenavel) {
+              <th mat-header-cell *matHeaderCellDef mat-sort-header [style.width]="coluna.largura">
+                {{ coluna.titulo }}
+              </th>
+            } @else {
+              <th mat-header-cell *matHeaderCellDef [style.width]="coluna.largura">
+                {{ coluna.titulo }}
+              </th>
+            }
 
-      <tr mat-header-row *matHeaderRowDef="nomesDasColunas()"></tr>
-      <tr
-        mat-row
-        *matRowDef="let linha; columns: nomesDasColunas()"
-        class="grid-linha"
-        [class.grid-linha-selecionada]="estaSelecionada(linha)"
-        (click)="clicarNaLinha(linha)"
-      ></tr>
-    </table>
-  </div>
+            <td mat-cell *matCellDef="let linha" [class]="coluna.classe">
+              <div class="celula">
+                @if (coluna.avatar) {
+                  <span class="celula-avatar">{{ coluna.avatar(linha) }}</span>
+                }
 
-  @if (!carregando() && erro()) {
-    <p class="grid-aviso status-red">{{ erro() }}</p>
-  } @else if (!carregando() && total() === 0) {
-    <p class="grid-aviso">{{ mensagemVazia() }}</p>
+                <div class="celula-texto">
+                  @if (coluna.pill && coluna.pill(linha); as tom) {
+                    <span class="pill" [class]="tom">{{ conteudoDaCelula(coluna, linha) }}</span>
+                  } @else {
+                    <span
+                      class="celula-valor"
+                      [class]="coluna.classeDaCelula ? coluna.classeDaCelula(linha) : ''"
+                    >
+                      {{ conteudoDaCelula(coluna, linha) }}
+                    </span>
+                  }
+
+                  @if (coluna.secundario && coluna.secundario(linha); as apoio) {
+                    <span class="celula-apoio">{{ apoio }}</span>
+                  }
+                </div>
+              </div>
+            </td>
+          </ng-container>
+        }
+
+        @if (temAcaoVisivel()) {
+          <ng-container matColumnDef="acoes">
+            <th mat-header-cell *matHeaderCellDef class="coluna-acoes">Ações</th>
+            <td mat-cell *matCellDef="let linha" class="coluna-acoes">
+              <div class="celula-acoes">
+                @for (acao of acoes(); track acao.icone) {
+                  @if (!acao.visivel || acao.visivel(linha)) {
+                    <button
+                      matIconButton
+                      type="button"
+                      class="acao"
+                      [class]="acao.tom ?? 'neutro'"
+                      [disabled]="acao.desabilitado ? acao.desabilitado(linha) : false"
+                      [attr.aria-label]="resolver(acao.titulo, linha)"
+                      [title]="resolver(acao.titulo, linha)"
+                      (click)="acao.executar(linha)"
+                    >
+                      <mat-icon>{{ resolver(acao.icone, linha) }}</mat-icon>
+                    </button>
+                  }
+                }
+              </div>
+            </td>
+          </ng-container>
+        }
+
+        <tr mat-header-row *matHeaderRowDef="nomesDasColunas()"></tr>
+        <tr
+          mat-row
+          *matRowDef="let linha; columns: nomesDasColunas()"
+          class="grid-linha"
+          [class.grid-linha-clicavel]="selecionavel()"
+          [class.grid-linha-selecionada]="estaSelecionada(linha)"
+          (click)="clicarNaLinha(linha)"
+        ></tr>
+      </table>
+    </div>
+
+    @if (erro(); as mensagem) {
+      <p class="grid-aviso grid-aviso-erro">{{ mensagem }}</p>
+    } @else if (total() === 0) {
+      <p class="grid-aviso">{{ mensagemVazia() }}</p>
+    }
   }
 
   <mat-paginator

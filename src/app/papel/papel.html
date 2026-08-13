@@ -1,0 +1,53 @@
+<div class="pagina">
+  <header class="pagina-cabecalho">
+    <div>
+      <h1>{{ entidade }}</h1>
+      <p>O que cada pessoa pode fazer. Um papel reúne permissões; o usuário recebe o papel.</p>
+    </div>
+
+    <div class="pagina-acoes">
+      <button
+        *appSePode="'papel:inserir'"
+        matButton="filled"
+        (click)="inserir()"
+        [disabled]="precisaEscolherProdutor()"
+      >
+        <mat-icon>add</mat-icon>
+        Novo papel
+      </button>
+    </div>
+  </header>
+
+  @if (precisaEscolherProdutor()) {
+    <div class="cartao sem-produtor">
+      <span class="sem-produtor-icone">
+        <mat-icon>agriculture</mat-icon>
+      </span>
+      <h2>Escolha um produtor primeiro</h2>
+      <p class="intro">
+        Sua conta é de super admin e não pertence a um produtor. Use o seletor no topo da tela para
+        dizer sobre qual produtor você quer trabalhar — os papéis dele aparecem aqui.
+      </p>
+    </div>
+  } @else {
+    <div class="busca cartao">
+      <mat-icon>search</mat-icon>
+      <input
+        type="search"
+        placeholder="Pesquisar por nome ou descrição…"
+        aria-label="Pesquisar papéis"
+        [ngModel]="termo()"
+        (ngModelChange)="termo.set($event)"
+      />
+    </div>
+
+    <app-grid
+      [colunas]="colunas"
+      [acoes]="acoes"
+      [carregar]="carregar"
+      [filtro]="filtro()"
+      modo="cliente"
+      mensagemVazia="Nenhum papel encontrado."
+    />
+  }
+</div>

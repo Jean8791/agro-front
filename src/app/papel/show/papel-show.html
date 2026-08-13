@@ -1,0 +1,105 @@
+<div class="pagina">
+  <header class="pagina-cabecalho">
+    <div>
+      <app-breadcrumb [steps]="steps()" />
+      <h1>{{ titulo() }}</h1>
+      <p>
+        Marque o que este papel permite. Quem o exercer verá só o que estiver marcado — e o que
+        estiver desmarcado nem aparece na tela dessa pessoa.
+      </p>
+    </div>
+  </header>
+
+  <div class="cartao formulario">
+    @if (loading()) {
+      <app-loader />
+    }
+
+    <form [formGroup]="form" (ngSubmit)="salvar()">
+      <div class="cartao-corpo">
+        @if (sistema()) {
+          <p class="aviso">
+            <mat-icon>lock</mat-icon>
+            Este papel vem com o sistema e vale para todos os produtores, por isso não pode ser
+            alterado. Para uma variação dele, crie um papel novo.
+          </p>
+        }
+
+        <div class="linha">
+          <mat-form-field appearance="outline" class="campo-nome">
+            <mat-label>Nome</mat-label>
+            <input matInput formControlName="nome" />
+            @if (form.controls.nome.hasError('required') && form.controls.nome.touched) {
+              <mat-error>Informe o nome</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="campo-descricao">
+            <mat-label>Descrição</mat-label>
+            <input matInput formControlName="descricao" placeholder="Para que serve este papel" />
+          </mat-form-field>
+        </div>
+
+        <p class="rotulo-micro">O que este papel permite</p>
+
+        <div class="matriz-rolagem">
+          <table class="matriz">
+            <thead>
+              <tr>
+                <th scope="col">Tela</th>
+                @for (acao of colunas(); track acao) {
+                  <th scope="col" class="coluna-acao">{{ acao }}</th>
+                }
+                <th scope="col" class="coluna-acao">Tudo</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (recurso of recursos(); track recurso.recurso) {
+                <tr>
+                  <th scope="row">{{ recurso.rotulo }}</th>
+
+                  @for (acao of colunas(); track acao) {
+                    <td class="coluna-acao">
+                      @let permissao = permissaoDe(recurso, acao);
+                      @if (permissao) {
+                        <mat-checkbox
+                          [checked]="marcada(permissao)"
+                          [disabled]="sistema()"
+                          (change)="alternar(permissao, $event.checked)"
+                          [attr.aria-label]="acao + ' em ' + recurso.rotulo"
+                        />
+                      } @else {
+                        <span class="nao-se-aplica" aria-label="Não se aplica">—</span>
+                      }
+                    </td>
+                  }
+
+                  <td class="coluna-acao">
+                    <mat-checkbox
+                      [checked]="recursoInteiroMarcado(recurso)"
+                      [indeterminate]="recursoParcialmenteMarcado(recurso)"
+                      [disabled]="sistema()"
+                      (change)="alternarRecurso(recurso, $event.checked)"
+                      [attr.aria-label]="'Tudo em ' + recurso.rotulo"
+                    />
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="cartao-rodape rodape">
+        <button matButton type="button" (click)="voltar()">
+          {{ sistema() ? 'Voltar' : 'Cancelar' }}
+        </button>
+        @if (!sistema()) {
+          <button matButton="filled" type="submit" [disabled]="salvando()">
+            {{ salvando() ? 'Salvando…' : 'Salvar' }}
+          </button>
+        }
+      </div>
+    </form>
+  </div>
+</div>
