@@ -2,15 +2,18 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
+import { forkJoin, of } from 'rxjs';
 import { Breadcrumb } from '../../shared/components/breadcrumb/breadcrumb';
 import { Loader } from '../../shared/components/loader/loader';
 import { mensagemDoErro } from '../../shared/erro';
 import { Step } from '../../shared/models/step';
 import { Toast } from '../../shared/toast.service';
-import { PAPEIS, Papel } from '../models/papel';
+import { Papel } from '../../papel/models/papel';
+import { PapelService } from '../../papel/papel.service';
 import { UsuarioService } from '../usuario.service';
 
 @Component({
@@ -19,6 +22,7 @@ import { UsuarioService } from '../usuario.service';
     ReactiveFormsModule,
     MatButtonModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
     MatSelectModule,
     Breadcrumb,
@@ -30,13 +34,16 @@ import { UsuarioService } from '../usuario.service';
 export class UsuarioShow implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly usuarioService = inject(UsuarioService);
+  private readonly papelService = inject(PapelService);
   private readonly router = inject(Router);
   private readonly rota = inject(ActivatedRoute);
   private readonly toast = inject(Toast);
 
   protected readonly loading = signal(false);
   protected readonly salvando = signal(false);
-  protected readonly papeis = PAPEIS;
+
+  /** Os papéis que este produtor pode atribuir: os de sistema e os dele. */
+  protected readonly papeis = signal<Papel[]>([]);
 
   /** 'novo' na rota = inserção; qualquer outro valor é o id para edição. */
   private readonly uri = signal<string>('novo');
@@ -51,7 +58,7 @@ export class UsuarioShow implements OnInit {
     nome: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     senha: [''],
-    papel: ['CONSULTA' as Papel, Validators.required],
+    papelId: ['', Validators.required],
   });
 
   ngOnInit(): void {
@@ -64,17 +71,27 @@ export class UsuarioShow implements OnInit {
       // senha só é exigida (e enviada) na inserção — o PUT do back não a aceita
       this.form.controls.senha.addValidators([Validators.required, Validators.minLength(6)]);
       this.form.controls.senha.updateValueAndValidity();
-      return;
     }
 
     this.loading.set(true);
-    this.usuarioService.get(this.uri()).subscribe({
-      next: (usuario) => {
-        this.form.patchValue({
-          nome: usuario.nome,
-          email: usuario.email,
-          papel: usuario.papel,
-        });
+
+    // a lista de papéis e o usuário chegam juntos: o select precisa das
+    // opções antes de receber o papelId, senão o valor não casa com nada
+    forkJoin({
+      papeis: this.papelService.query(),
+      usuario: this.inserindo() ? of(null) : this.usuarioService.get(this.uri()),
+    }).subscribe({
+      next: ({ papeis, usuario }) => {
+        this.papeis.set(papeis);
+
+        if (usuario) {
+          this.form.patchValue({
+            nome: usuario.nome,
+            email: usuario.email,
+            papelId: usuario.papelId,
+          });
+        }
+
         this.after();
       },
       error: (erro) => this.onError(erro),
@@ -95,7 +112,7 @@ export class UsuarioShow implements OnInit {
       : this.usuarioService.editar(this.uri(), {
           nome: valor.nome,
           email: valor.email,
-          papel: valor.papel,
+          papelId: valor.papelId,
         });
 
     requisicao.subscribe({

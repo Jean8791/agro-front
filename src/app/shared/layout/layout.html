@@ -1,32 +1,73 @@
-<mat-toolbar color="primary">
-  <span class="layout-titulo">Agro</span>
+<div class="casca" [class.casca-aberta]="menuAberto()">
+  <aside class="barra">
+    <a class="barra-marca" routerLink="/inicio" (click)="fecharMenu()">
+      <span class="marca-simbolo">A</span>
+      <span class="marca-nome">Agro</span>
+    </a>
 
-  <nav class="layout-menu">
-    <a matButton routerLink="/inicio" routerLinkActive="layout-link-ativo">Início</a>
-    @if (admin()) {
-      <a matButton routerLink="/usuarios" routerLinkActive="layout-link-ativo">Usuários</a>
+    <nav class="barra-menu">
+      @for (item of menu(); track item.rota) {
+        <a
+          class="menu-item"
+          [routerLink]="item.rota"
+          routerLinkActive="menu-item-ativo"
+          (click)="fecharMenu()"
+        >
+          <mat-icon>{{ item.icone }}</mat-icon>
+          <span>{{ item.rotulo }}</span>
+        </a>
+      }
+    </nav>
+
+    @if (usuario(); as logado) {
+      <div class="barra-rodape">
+        <span class="ponto-ativo"></span>
+        <span>{{ logado.papelNome }}</span>
+      </div>
     }
-  </nav>
+  </aside>
 
-  <span class="layout-espaco"></span>
+  <!-- Só aparece com a gaveta aberta, no mobile: fechar clicando fora. -->
+  <div class="veu" (click)="fecharMenu()"></div>
 
-  @if (usuario(); as logado) {
-    <span class="layout-conta">
-      <strong>{{ logado.email }}</strong>
-      <small>{{ logado.papel }}</small>
-    </span>
-    <button matIconButton [matMenuTriggerFor]="menu" aria-label="Conta">
-      <mat-icon>account_circle</mat-icon>
-    </button>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="sair()">
-        <mat-icon>logout</mat-icon>
-        <span>Sair</span>
+  <div class="coluna">
+    <header class="cabecalho">
+      <button
+        matIconButton
+        class="botao-gaveta"
+        (click)="alternarMenu()"
+        aria-label="Abrir ou fechar o menu"
+      >
+        <mat-icon>menu</mat-icon>
       </button>
-    </mat-menu>
-  }
-</mat-toolbar>
 
-<main class="layout-conteudo">
-  <router-outlet />
-</main>
+      @if (superAdmin()) {
+        <app-seletor-produtor />
+      }
+
+      <span class="cabecalho-espaco"></span>
+
+      @if (usuario(); as logado) {
+        <button class="conta" [matMenuTriggerFor]="menuConta" aria-label="Conta">
+          <span class="conta-texto">
+            <strong>{{ logado.email }}</strong>
+            <small>{{ logado.papelNome }}</small>
+          </span>
+          <span class="conta-avatar">{{ iniciais() }}</span>
+          <mat-icon class="conta-seta">expand_more</mat-icon>
+        </button>
+
+        <mat-menu #menuConta="matMenu">
+          <button mat-menu-item (click)="sair()">
+            <mat-icon>logout</mat-icon>
+            <span>Sair do sistema</span>
+          </button>
+        </mat-menu>
+      }
+    </header>
+
+    <main class="conteudo">
+      <router-outlet />
+    </main>
+  </div>
+</div>

@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { papelGuard } from '../auth/auth.guard';
+import { permissaoGuard } from '../auth/auth.guard';
 
 /**
  * Rotas do domínio. A listagem fica na raiz e o formulário em `/:uri`, onde
@@ -8,7 +8,7 @@ import { papelGuard } from '../auth/auth.guard';
 export const usuarioRoutes: Routes = [
   {
     path: 'usuarios',
-    canActivate: [papelGuard('ADMIN')],
+    canActivate: [permissaoGuard('usuario:listar')],
     children: [
       {
         path: '',
