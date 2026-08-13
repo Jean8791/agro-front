@@ -1,0 +1,64 @@
+// A listagem de papéis tem a mesma anatomia da de usuários: barra de busca
+// fina sobre a tabela, e o aviso de "escolha um produtor" no lugar dela
+// enquanto o super admin não escolheu.
+.busca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 18px;
+
+  mat-icon {
+    flex: 0 0 20px;
+    color: var(--tinta-tenue);
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  input {
+    flex: 1;
+    padding: 15px 0;
+    color: var(--tinta);
+    background: none;
+    border: none;
+    font: inherit;
+    font-size: 0.875rem;
+    outline: none;
+
+    &::placeholder {
+      color: var(--tinta-tenue);
+    }
+  }
+
+  &:focus-within {
+    border-color: var(--marca-100);
+    box-shadow: 0 0 0 4px var(--marca-50);
+  }
+}
+
+.sem-produtor {
+  padding: 56px 32px;
+  text-align: center;
+
+  h2 {
+    margin: 18px 0 0;
+    font-size: 1.125rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .intro {
+    margin: 8px auto 0;
+    max-width: 34rem;
+  }
+}
+
+.sem-produtor-icone {
+  display: inline-grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  color: var(--ambar);
+  background: var(--ambar-suave);
+  border-radius: var(--raio-lg);
+}
