@@ -6,6 +6,8 @@ export interface ConfirmacaoData {
   mensagem: string;
   textoConfirmar: string;
   textoCancelar: string;
+  /** Ação destrutiva: o botão de confirmar sai em vermelho. */
+  perigo: boolean;
 }
 
 /** Corpo do dialog aberto por {@link Modal.confirmation}. */

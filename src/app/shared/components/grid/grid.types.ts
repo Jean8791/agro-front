@@ -1,5 +1,8 @@
 import { Observable } from 'rxjs';
 
+/** Tons dos rótulos de estado. Mesmos nomes das classes `.pill` do tema. */
+export type TomPill = 'verde' | 'vermelho' | 'ambar' | 'azul' | 'cinza';
+
 /**
  * Definição de uma coluna — equivalente ao `columnDefs` do Grid do
  * projeto de referência (`{field, title, width, cellClass, template}`).
@@ -21,10 +24,45 @@ export interface ColunaGrid<T> {
    */
   valor?: (linha: T) => string;
   /**
+   * Segunda linha em corpo menor sob o valor — e-mail sob o nome, documento
+   * sob a razão social. Devolver vazio omite a linha.
+   */
+  secundario?: (linha: T) => string;
+  /**
+   * Iniciais do círculo à esquerda do valor. Serve para dar rosto à coluna que
+   * identifica o registro; as outras colunas não devem usar.
+   */
+  avatar?: (linha: T) => string;
+  /**
+   * Desenha o valor como rótulo de estado colorido em vez de texto puro.
+   * Devolver `null` cai de volta no texto.
+   */
+  pill?: (linha: T) => TomPill | null;
+  /**
    * Classe aplicada só na célula, calculada por linha — usado para pintar
    * situação (ver `.status-red`/`.status-green` do tema).
    */
   classeDaCelula?: (linha: T) => string;
+}
+
+/**
+ * Uma ação que age sobre um registro, mostrada como botão de ícone na própria
+ * linha. Substitui a botoeira "selecione a linha, depois clique no botão" —
+ * o alvo da ação é sempre a linha em que o ícone está.
+ */
+export interface AcaoGrid<T> {
+  /** Nome do ícone do Material. Pode variar por linha (bloquear/desbloquear). */
+  icone: string | ((linha: T) => string);
+  /** Vira o `title` e o `aria-label` do botão. */
+  titulo: string | ((linha: T) => string);
+  /** O que fazer com o registro da linha. */
+  executar: (linha: T) => void;
+  /** Cor do hover. `perigo` é vermelho, para o que destrói. */
+  tom?: 'neutro' | 'primario' | 'perigo';
+  /** Some com a ação em linhas onde ela não faz sentido. Padrão: sempre visível. */
+  visivel?: (linha: T) => boolean;
+  /** Desabilita sem esconder — usado enquanto a requisição anterior não voltou. */
+  desabilitado?: (linha: T) => boolean;
 }
 
 /**
