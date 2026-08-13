@@ -24,14 +24,30 @@ src/app/
       usuario-show.ts / .html / .scss
     pesquisa-avancada/             modal de filtro (quando existir)
 
+  papel/                        -> domínio: o que cada pessoa pode fazer
+    papel.ts / .html / .scss       LISTAGEM
+    papel.service.ts               resource: CRUD + GET /papeis/permissoes
+    papel.routes.ts
+    models/
+      papel.ts  permissao.ts       espelham PapelResponse e RecursoResponse
+    show/                          FORMULÁRIO: nome + matriz recurso x ação
+
+  produtor/                     -> domínio do produto (só super admin acessa)
+    produtor.service.ts            resource: GET /produtores
+    seletor/                       o seletor do cabeçalho
+    models/produtor.ts
+
   auth/                         -> técnico acoplado a usuario (login/JWT)
     login/  auth.service.ts  auth.guard.ts  auth.interceptor.ts
     token-storage.ts  auth.routes.ts  models/
+    permissoes.ts                  pode('usuario:inserir') — fonte única
 
   inicio/                       -> tela inicial pós-login
 
   shared/                       -> técnico, transversal a mais de um domínio
-    layout/                        casca: toolbar + menu + router-outlet
+    layout/                        casca: barra lateral + cabeçalho + outlet
+    tenant.ts                      produtor escolhido pelo super admin
+    se-pode.ts                     diretiva *appSePode="'usuario:inserir'"
     toast.service.ts               = Toast 
     modal.service.ts               = Modal 
     confirmacao/                   corpo do dialog de confirmação
@@ -58,28 +74,49 @@ src/app/
 | `Modal.confirmation(msg, cb)` | `modal.confirmation(msg).subscribe(() => …)` |
 | `onError(response)` / `after()` | métodos privados com os mesmos nomes, no fim da classe |
 | `resource.situacoes = [{label, value}]` | `export const SITUACOES = [{label, value}]` no service |
-| `panel panel-default` | classes `.painel` / `.painel-cabecalho` / `.painel-corpo` (globais) |
-| `Grid.createGrid(callback, columnDefs, options)` | `<app-grid [colunas] [carregar] [filtro] />` |
+| `panel panel-default` | classes `.cartao` / `.cartao-cabecalho` / `.cartao-corpo` (globais) |
+| `Grid.createGrid(callback, columnDefs, options)` | `<app-grid [colunas] [acoes] [carregar] [filtro] />` |
 | `gridOptions.refresh()` | `grid().recarregar()` (via `viewChild`) |
 | `gridOptions.setFilter(criterios)` | input `[filtro]` — mudou, volta para a primeira página |
-| `gridOptions.selectedRow` | output `(selecionou)` |
+| botoeira + `gridOptions.selectedRow` | input `[acoes]`: botão de ícone na própria linha |
 | `ParametrosGrid {offset, limit, sort}` | `ParametrosGrid` — mesmos nomes |
 | `clientSidePaging: true` | `modo="cliente"` |
 
 ### O grid (`shared/components/grid`)
 
-Cuida de paginação, quantidade por página, ordenação, seleção de linha,
-estado de carregando e mensagem de vazio/erro. A tela só declara as colunas,
-passa a função de busca e reage ao que foi selecionado.
+Cuida de paginação, quantidade por página, ordenação, esqueleto de carregando
+e mensagem de vazio/erro. A tela declara as colunas, as ações e a função de
+busca.
+
+**Não há botoeira.** O que age sobre um registro vira botão de ícone na coluna
+Ações da própria linha — o alvo é sempre a linha em que o ícone está, sem o
+passo de "selecione primeiro". Inserir fica no cabeçalho da tela, não na grid.
+A coluna Ações some inteira quando nada nela está visível — o caso de quem só
+tem permissão de consultar, que veria um título sobre o vazio.
+`[selecionavel]="true"` traz de volta o realce de linha e o output
+`(selecionou)`, para a tela que precisar do registro fora das ações.
 
 ```ts
 protected readonly colunas: ColunaGrid<Usuario>[] = [
-  { field: 'nome', titulo: 'Nome', ordenavel: true },
-  { field: 'perfis', titulo: 'Perfis', valor: (l) => l.perfis.map(rotuloDoPerfil).join(', ') },
+  // avatar + secundario montam a célula que identifica o registro
+  { field: 'nome', titulo: 'Usuário', ordenavel: true,
+    avatar: (l) => l.nome.slice(0, 2), secundario: (l) => l.email },
+  { field: 'papel', titulo: 'Papel', valor: (l) => rotuloDoPapel(l.papel) },
   { field: 'ativo', titulo: 'Situação',
     valor: (l) => (l.ativo ? 'Ativo' : 'Bloqueado'),
-    classeDaCelula: (l) => (l.ativo ? '' : 'situacao-bloqueado') },
+    pill: (l) => (l.ativo ? 'verde' : 'vermelho') },
 ];
+
+protected readonly acoes: AcaoGrid<Usuario>[] = [
+  { icone: 'edit', titulo: 'Editar', tom: 'primario', executar: (l) => this.editar(l) },
+  // ícone e título podem variar por linha
+  { icone: (l) => (l.ativo ? 'lock' : 'lock_open'),
+    titulo: (l) => (l.ativo ? 'Bloquear' : 'Desbloquear'),
+    desabilitado: (l) => this.emOperacao() === l.id,
+    executar: (l) => this.bloquear(l) },
+  { icone: 'delete', titulo: 'Excluir', tom: 'perigo', executar: (l) => this.excluir(l) },
+];
+
 protected readonly carregar = (p: ParametrosGrid) => this.usuarioService.paginar(p);
 ```
 
@@ -95,8 +132,8 @@ isso — importá-lo na config dobrou o bundle inicial (297 kB → 612 kB).
 ### Regras
 
 1. **Ordem dentro do componente**: injeções, depois sinais de estado, depois
-   constantes da tela (`entidade`, `steps`, `colunas`), depois `ngOnInit()`,
-   depois as ações na ordem em que aparecem na botoeira, e por último
+   constantes da tela (`entidade`, `steps`, `colunas`, `acoes`), depois
+   `ngOnInit()`, depois as ações na ordem em que aparecem na tela, e por último
    `onError()` e `after()`. É a mesma leitura de cima para baixo .
 2. **Nenhuma URL no componente**: base vem de `environment.apiUrl` e a chamada
    HTTP mora sempre no service do domínio. Componente não injeta `HttpClient`.
@@ -116,35 +153,52 @@ isso — importá-lo na config dobrou o bundle inicial (297 kB → 612 kB).
 
 ## Identidade visual
 
-O visual vem do **Mini Raio-X do Preço Mínimo** (`~/workspace/codenest/RAIO X
-RURAL/.../app_miniraiox_pronto`): verde floresta sobre fundo creme, cartões de
-canto largo e sombra difusa, fonte Inter. A paleta do Material foi **gerada a
-partir do mesmo `#1f6047`** (`src/styles/_theme-colors.scss`, via
-`ng generate @angular/material:theme-color`), então componente pronto e classe
-própria saem na mesma cor.
+Painel administrativo em superfícies claras e neutras: fundo cinza-esverdeado
+(`#f6f8f8`), cartões brancos de canto largo com sombra rasa, fonte Inter. A cor
+da marca — **verde-petróleo `#0E3B3A`** — aparece só em blocos sólidos: barra
+lateral, botão primário, avatar, ícone de destaque. A referência de linguagem é
+o `marknow-web` (`~/workspace/codenest/marknow-web`, Next + Tailwind), de onde
+vêm a casca, a densidade e o tratamento de tabela.
+
+A paleta do Material foi **gerada a partir do mesmo `#0E3B3A`**
+(`src/styles/_theme-colors.scss`, via `ng generate @angular/material:theme-color
+--primary-color="#0E3B3A" --secondary-color="#155150" --tertiary-color="#34D399"
+--neutral-color="#6B7280" --directory="src/styles"`). O tom 40 que ela gera
+(`#3c6564`) é claro demais para o botão principal, então `:root` sobrescreve
+`--mat-sys-primary` com a cor da marca — `:root` tem mais especificidade que o
+`html` do `mat.theme`, e isso basta.
 
 Tokens e classes ficam em `src/styles.scss`:
 
 | Classe | Para que serve |
 | --- | --- |
-| `.hero` / `.hero-inner` / `.hero-copy` / `.hero-badges` | faixa verde de abertura, largura total |
-| `.brand-row` / `.brand-mark` | marca com o quadrado de canto assimétrico |
-| `.eyebrow` | rótulo em caixa-alta espaçada que abre cada bloco |
-| `.main-content` | container central de 1180px |
-| `.card` + `.card-heading` + `.step-number` | cartão branco aberto por número em quadrado verde |
-| `.painel` / `.painel-cabecalho` / `.painel-corpo` | casca das telas administrativas (grid + botoeira) |
-| `.primary-result` | bloco de destaque com gradiente verde e valor grande |
-| `.result-metric` | mini-cartão indicador (label em cima, valor embaixo) |
-| `.status-red` / `.status-yellow` / `.status-green` | estados do semáforo |
-| `.field-help` / `.section-intro` | texto de apoio |
+| `.pagina` | empilha o conteúdo da tela com o respiro padrão |
+| `.pagina-cabecalho` + `.pagina-acoes` | título e subtítulo à esquerda, ação primária à direita |
+| `.cartao` + `.cartao-corpo` / `-cabecalho` / `-rodape` | a superfície branca sobre a qual tudo acontece |
+| `.pill` + `.verde` / `.vermelho` / `.ambar` / `.azul` / `.cinza` | rótulo curto de estado |
+| `.indicador` | mini-cartão de número (ícone, rótulo miúdo, valor grande) |
+| `.rotulo-micro` | rótulo em caixa-alta espaçada que abre um bloco |
+| `.texto-apoio` / `.intro` | texto de apoio |
+| `.botao-perigo` | botão preenchido em vermelho, para o que destrói |
+| `.status-red` / `.status-yellow` / `.status-green` | estados soltos (erro, `classeDaCelula`) |
 
-**O tom importa tanto quanto as cores**: no Raio-X os títulos são perguntas
-("Como você vende?", "Quanto custa produzir e vender?"), todo campo tem texto
-de ajuda e o resultado aparece como semáforo, não como número solto. Telas
-novas seguem isso.
+**Nada de hero em tela de trabalho.** A faixa de cor cheia existe só no login.
+Toda tela interna abre com `.pagina-cabecalho`.
 
-`.layout-conteudo` **não tem padding** de propósito — o hero precisa ir de
-ponta a ponta. Cada tela envolve seu conteúdo em `.main-content`.
+**O tom importa tanto quanto as cores**: títulos que são perguntas ("Quanto
+precisa receber"), campo com texto de ajuda, resultado como semáforo e não como
+número solto. Telas novas seguem isso.
+
+### A casca (`shared/layout`)
+
+Barra lateral fixa de 260px na cor da marca + cabeçalho branco de 76px +
+conteúdo com teto de 1480px. Abaixo de 960px a barra sai do fluxo e vira
+gaveta, aberta pelo botão de menu do cabeçalho, com véu para fechar clicando
+fora. O item ativo do menu ganha fundo claro e uma barra de acento à esquerda.
+
+O lado esquerdo do cabeçalho está vazio de propósito: é onde entraria a busca
+global, e um campo de busca que não busca nada é pior do que espaço em branco.
+Quando o back tiver esse endpoint, ele mora ali.
 
 ## Decisões já tomadas
 
@@ -154,7 +208,8 @@ ponta a ponta. Cada tela envolve seu conteúdo em `.main-content`.
   desenhado, e menu, dialog e select do Material simplesmente não abrem, sem
   erro nenhum no console.
 - **Sem SSR.** O scaffold veio com `@angular/ssr` + express; foi removido.
-- **Angular Material** 21.2.14, tema azure-blue. `@angular/animations` **não**
+- **Angular Material** 21.2.14, tema gerado a partir do `#0E3B3A` da marca.
+  `@angular/animations` **não**
   é necessário (o `ng add` não o instala e o Material 21 usa animação CSS).
 - **Node 20.19.6** (`~/.nvm/versions/node/v20.19.6`). O `node` do PATH padrão
   desta máquina é o v8.13.0, que quebra o npm no postinstall do esbuild.
@@ -170,6 +225,59 @@ ponta a ponta. Cada tela envolve seu conteúdo em `.main-content`.
 | POST/GET | `/usuarios` | ADMIN |
 | GET/PUT/DELETE | `/usuarios/{id}` | ADMIN |
 | PATCH | `/usuarios/{id}/bloquear` · `/desbloquear` | ADMIN |
+| POST/GET | `/produtores` · `/produtores/{id}` | SUPER_ADMIN |
+| PATCH | `/produtores/{id}/inativar` · `/reativar` | SUPER_ADMIN |
+| GET | `/papeis` · `/papeis/permissoes` · `/papeis/{id}` | `papel:listar` |
+| POST/PUT/DELETE | `/papeis` · `/papeis/{id}` | `papel:inserir`/`editar`/`excluir` |
+
+### Permissões
+
+A partir de 13/08/2026 a autorização é por **permissão**, não por papel. O
+papel virou tabela no back (um conjunto de permissões com nome) e a claim
+`groups` do token carrega os códigos `recurso:acao` — `usuario:inserir`. O
+super admin não tem papel e entra com o marcador `SUPER_ADMIN`, que passa em
+tudo. A claim `papel` traz o nome do papel só para o cabeçalho exibir; **nada
+decide por ela**.
+
+Quatro lugares decidem o que aparece, e todos consultam o mesmo
+`auth/permissoes.ts`:
+
+| Onde | Como |
+| --- | --- |
+| rota | `canActivate: [permissaoGuard('papel:listar')]` — sempre a de listar |
+| item do menu | campo `permissao` no `MENU` do `layout.ts` |
+| botão do cabeçalho | `*appSePode="'usuario:inserir'"` |
+| ação da linha | `visivel: () => this.permissoes.pode('usuario:excluir')` |
+
+**Esconder botão é conforto, não segurança.** Quem barra é o `@RolesAllowed`
+de cada endpoint — o front só evita mostrar o que responderia 403. Nunca
+tratar a ausência do botão como garantia.
+
+Ao criar uma tela nova: acrescentar recurso e permissões no back, e no front
+só declarar o `permissaoGuard`, o item de menu e os `visivel` das ações. A
+matriz da tela de papéis se monta sozinha a partir de
+`GET /papeis/permissoes`.
+
+### O super admin e o `produtorId`
+
+Todo endpoint de `/usuarios` aceita `?produtorId=<uuid>`, e ele é
+**obrigatório** quando quem chama é super admin — que não tem produtor no
+token. Sem ele o back responde `Informe o produtor: super admin não tem um na
+sessão`, e a tela inteira fica inútil.
+
+Quem cuida disso é o `TenantContext` (`shared/tenant.ts`): guarda o produtor
+escolhido no seletor do cabeçalho (`produtor/seletor/`, visível só para super
+admin) e persiste em localStorage. O `usuario.service.ts` anexa `produtorId`
+em toda chamada quando há produtor escolhido — na query string, exceto no
+`POST /usuarios`, onde o campo pertence ao corpo (`UsuarioRequest.produtorId`).
+Quem tem papel dentro de um produtor nunca escolhe nada, nada é anexado, e o
+back usa o produtor do token.
+
+Duas consequências para telas novas: a listagem não deve chamar o back
+enquanto o super admin não escolher (`precisaEscolherProdutor` em
+`usuario.ts`), e o `produtorId` entra no `[filtro]` do grid só para ele
+perceber a troca de produtor e refazer a busca — quem envia ao back é o
+service. `AuthService.sair()` limpa a escolha junto com os tokens.
 
 Access token dura 15 min, refresh 7 dias com rotação. Erros vêm sempre como
 `ErrorResponse`; login com excesso de tentativas devolve **429**, não 400.

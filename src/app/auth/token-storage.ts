@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { Papel, SUPER_ADMIN } from '../usuario/models/papel';
+import { CodigoPermissao } from '../papel/models/permissao';
 import { LoginResponse } from './models/login-response';
 import { UsuarioAutenticado } from './models/usuario-autenticado';
 
@@ -46,16 +46,20 @@ export class TokenStorage {
     this._usuario.set(null);
   }
 
-  temPapel(papel: Papel): boolean {
-    return this._usuario()?.papel === papel;
-  }
-
-  /** Super admin passa em qualquer exigência de papel: ele enxerga tudo. */
-  podeComoPapel(papel: Papel): boolean {
+  /**
+   * Se quem está logado tem a permissão. Super admin passa em qualquer uma:
+   * ele administra o produto e não tem papel de onde tirá-las.
+   *
+   * <p>Isto decide o que *aparece*, não o que é permitido — quem barra é o
+   * `@RolesAllowed` do back.
+   */
+  pode(permissao: CodigoPermissao): boolean {
     const logado = this._usuario();
-    return logado ? logado.superAdmin || logado.papel === papel : false;
+    return logado ? logado.superAdmin || logado.permissoes.includes(permissao) : false;
   }
 }
+
+const SUPER_ADMIN = 'SUPER_ADMIN';
 
 /**
  * Lê as claims do access token. Isso NÃO valida assinatura — quem valida é o
@@ -73,18 +77,23 @@ function lerClaims(token: string | null): UsuarioAutenticado | null {
       sub: string;
       email: string;
       groups?: string[];
+      papel?: string;
       produtor?: string;
       exp: number;
     };
 
-    const papel = (claims.groups?.[0] ?? 'CONSULTA') as Papel | typeof SUPER_ADMIN;
+    // groups carrega as permissões do papel; o super admin não tem papel e
+    // entra com este marcador único no lugar delas
+    const grupos = claims.groups ?? [];
+    const superAdmin = grupos.includes(SUPER_ADMIN);
 
     return {
       id: claims.sub,
       email: claims.email,
-      papel,
+      permissoes: grupos.filter((g) => g !== SUPER_ADMIN) as CodigoPermissao[],
+      papelNome: claims.papel ?? '',
       produtorId: claims.produtor,
-      superAdmin: papel === SUPER_ADMIN,
+      superAdmin,
       expiraEm: claims.exp,
     };
   } catch {

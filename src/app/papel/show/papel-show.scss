@@ -1,0 +1,101 @@
+// Mais largo que o formulário de usuário: aqui a matriz é o conteúdo
+// principal, e espremê-la em 56rem obrigaria a rolar de lado sem necessidade.
+.formulario {
+  max-width: 72rem;
+  overflow: hidden;
+}
+
+.linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.campo-nome,
+.campo-descricao {
+  flex: 1 1 18rem;
+}
+
+.aviso {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 1.25rem;
+  padding: 12px 14px;
+  color: var(--tinta-fraca);
+  background: var(--pagina);
+  border-radius: var(--raio-md);
+  font-size: 0.8125rem;
+
+  mat-icon {
+    flex: 0 0 18px;
+    color: var(--tinta-tenue);
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.rotulo-micro {
+  margin: 1.5rem 0 0.75rem;
+}
+
+// A matriz rola sozinha em tela estreita: quem rola é ela, nunca a página.
+.matriz-rolagem {
+  overflow-x: auto;
+  border: 1px solid var(--linha);
+  border-radius: var(--raio-md);
+}
+
+.matriz {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+
+  th,
+  td {
+    padding: 12px 16px;
+    text-align: left;
+  }
+
+  thead th {
+    position: sticky;
+    top: 0;
+    color: var(--tinta-fraca);
+    background: var(--pagina);
+    border-bottom: 1px solid var(--linha);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  tbody th {
+    color: var(--tinta);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  tbody tr + tr th,
+  tbody tr + tr td {
+    border-top: 1px solid var(--linha);
+  }
+
+  tbody tr:hover {
+    background: var(--pagina);
+  }
+}
+
+// A coluna de ação é estreita e centrada: a caixa é o conteúdo, não o texto.
+.coluna-acao {
+  width: 1%;
+  text-align: center !important;
+  white-space: nowrap;
+}
+
+// "Não se aplica" precisa ler como ausência, não como caixa desmarcada.
+.nao-se-aplica {
+  color: var(--tinta-tenue);
+  user-select: none;
+}

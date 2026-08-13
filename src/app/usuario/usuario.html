@@ -1,45 +1,53 @@
-<div class="main-content">
-  <div class="painel">
-    <div class="painel-cabecalho">
-      <app-breadcrumb [steps]="steps" />
+<div class="pagina">
+  <header class="pagina-cabecalho">
+    <div>
+      <h1>{{ entidade }}</h1>
+      <p>Quem entra no sistema e o que cada pessoa pode fazer.</p>
     </div>
 
-    <div class="painel-corpo">
-      <div class="botoeira">
-        <button matButton="filled" (click)="inserir()">Inserir</button>
-        <button matButton="outlined" (click)="editar()">Editar</button>
+    <div class="pagina-acoes">
+      <button
+        *appSePode="'usuario:inserir'"
+        matButton="filled"
+        (click)="inserir()"
+        [disabled]="precisaEscolherProdutor()"
+      >
+        <mat-icon>person_add</mat-icon>
+        Novo usuário
+      </button>
+    </div>
+  </header>
 
-        @if (bloqueando()) {
-          <button matButton="outlined" disabled>Aguarde…</button>
-        } @else {
-          <button matButton="outlined" (click)="bloquear()">
-            {{ linhaSelecionada()?.ativo === false ? 'Desbloquear' : 'Bloquear' }}
-          </button>
-        }
-
-        @if (excluindo()) {
-          <button matButton="outlined" disabled>Excluindo…</button>
-        } @else {
-          <button matButton="outlined" class="botao-perigo" (click)="excluir()">Excluir</button>
-        }
-
-        <span class="botoeira-espaco"></span>
-
-        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-pesquisa">
-          <mat-label>Pesquisar</mat-label>
-          <input matInput [ngModel]="termo()" (ngModelChange)="termo.set($event)" />
-          <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
-      </div>
-
-      <app-grid
-        [colunas]="colunas"
-        [carregar]="carregar"
-        [filtro]="filtro()"
-        modo="cliente"
-        mensagemVazia="Nenhum usuário encontrado."
-        (selecionou)="linhaSelecionada.set($event)"
+  @if (precisaEscolherProdutor()) {
+    <div class="cartao sem-produtor">
+      <span class="sem-produtor-icone">
+        <mat-icon>agriculture</mat-icon>
+      </span>
+      <h2>Escolha um produtor primeiro</h2>
+      <p class="intro">
+        Sua conta é de super admin e não pertence a um produtor. Use o seletor no topo da tela para
+        dizer sobre qual produtor você quer trabalhar — os usuários dele aparecem aqui.
+      </p>
+    </div>
+  } @else {
+    <div class="busca cartao">
+      <mat-icon>search</mat-icon>
+      <input
+        type="search"
+        placeholder="Pesquisar por nome ou e-mail…"
+        aria-label="Pesquisar usuários"
+        [ngModel]="termo()"
+        (ngModelChange)="termo.set($event)"
       />
     </div>
-  </div>
+
+    <app-grid
+      [colunas]="colunas"
+      [acoes]="acoes"
+      [carregar]="carregar"
+      [filtro]="filtro()"
+      modo="cliente"
+      mensagemVazia="Nenhum usuário encontrado."
+    />
+  }
 </div>
