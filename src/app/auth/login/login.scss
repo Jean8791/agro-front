@@ -1,45 +1,90 @@
+// Fundo verde profundo com um clarão diagonal: é a única tela em que a cor da
+// marca ocupa a superfície inteira, e o cartão branco flutua sobre ela.
 .login-pagina {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
   padding: 1.5rem;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(52, 211, 153, 0.16), transparent 26rem),
+    var(--marca-950);
 }
 
 .login-cartao {
   width: 100%;
-  max-width: 27rem;
-  overflow: hidden;
+  max-width: 26rem;
+  padding: 40px 34px;
+  border-color: transparent;
+  box-shadow: 0 30px 70px rgba(7, 36, 35, 0.4);
 }
 
-h1 {
-  margin: 2px 0 0;
-  font-size: 2rem;
-  line-height: 1.05;
-  letter-spacing: -0.04em;
+.login-marca {
+  text-align: center;
+
+  h1 {
+    margin: 18px 0 0;
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+
+  p {
+    margin: 6px 0 0;
+    color: var(--tinta-fraca);
+    font-size: 0.875rem;
+  }
 }
 
-.login-progresso {
-  margin-top: 1.25rem;
-  border-radius: 999px;
+.marca-simbolo {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto;
+  color: #fff;
+  background: var(--marca-900);
+  border-radius: var(--raio-lg);
+  font-size: 1.4rem;
+  font-weight: 900;
 }
 
 form {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  margin-top: 1.5rem;
+  margin-top: 2rem;
+}
+
+// Ícone do prefixo: o Material não dá respiro entre ele e o texto digitado.
+mat-form-field mat-icon[matPrefix] {
+  margin: 0 10px 0 4px;
+  color: var(--tinta-tenue);
 }
 
 .login-erro {
+  display: flex;
+  align-items: center;
+  gap: 9px;
   margin: 0 0 1rem;
   padding: 12px 14px;
-  border-radius: var(--radius-sm);
-  font-size: 0.8rem;
+  color: var(--vermelho);
+  background: var(--vermelho-suave);
+  border: 1px solid var(--vermelho-linha);
+  border-radius: var(--raio-md);
+  font-size: 0.8125rem;
   font-weight: 600;
 }
 
+.login-erro-ponto {
+  flex: 0 0 6px;
+  width: 6px;
+  height: 6px;
+  background: var(--vermelho);
+  border-radius: 50%;
+}
+
 .login-botao {
-  min-height: 46px;
+  min-height: 50px;
   font-weight: 800;
 }

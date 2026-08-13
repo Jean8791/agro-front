@@ -1,0 +1,105 @@
+:host {
+  display: block;
+}
+
+// Mesma linguagem do bloco de conta do outro lado do cabeçalho: rótulo miúdo
+// em cima, valor em negrito embaixo.
+.seletor {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 20rem;
+  padding: 7px 12px;
+  color: inherit;
+  background: none;
+  border: 1px solid var(--linha-forte);
+  border-radius: var(--raio-lg);
+  cursor: pointer;
+  font: inherit;
+  transition: background-color 0.15s, border-color 0.15s;
+
+  &:hover {
+    background: var(--pagina);
+    border-color: var(--marca-100);
+  }
+}
+
+// Sem nada escolhido o seletor é a pendência da tela, não um controle neutro.
+.seletor-vazio {
+  border-color: var(--ambar-linha);
+  background: var(--ambar-suave);
+
+  .seletor-icone,
+  strong {
+    color: var(--ambar);
+  }
+}
+
+.seletor-icone {
+  flex: 0 0 20px;
+  color: var(--marca-700);
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.seletor-texto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  line-height: 1.25;
+
+  small {
+    color: var(--tinta-tenue);
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  strong {
+    max-width: 15rem;
+    overflow: hidden;
+    font-size: 0.813rem;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.seletor-seta {
+  flex: 0 0 18px;
+  color: var(--tinta-tenue);
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.seletor-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.seletor-nome {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.seletor-check {
+  flex: 0 0 18px;
+  color: var(--marca-700);
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.seletor-aviso {
+  display: block;
+  padding: 14px 16px;
+  color: var(--tinta-tenue);
+  font-size: 0.813rem;
+}

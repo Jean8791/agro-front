@@ -1,3 +1,10 @@
+// O formulário não precisa da largura toda: linha de campo comprida demais
+// custa mais para ler do que para preencher.
+.formulario {
+  max-width: 56rem;
+  overflow: hidden;
+}
+
 .linha {
   display: flex;
   flex-wrap: wrap;
@@ -12,15 +19,28 @@
 }
 
 .aviso {
-  margin: 0 0 1rem;
-  font: var(--mat-sys-body-small);
-  color: var(--mat-sys-on-surface-variant);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 14px;
+  color: var(--tinta-fraca);
+  background: var(--pagina);
+  border-radius: var(--raio-md);
+  font-size: 0.8125rem;
+
+  mat-icon {
+    flex: 0 0 18px;
+    color: var(--tinta-tenue);
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
 }
 
 .rodape {
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
-  padding-top: 0.5rem;
-  border-top: 1px solid var(--mat-sys-outline-variant);
+  background: #fcfdfd;
 }

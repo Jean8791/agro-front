@@ -1,59 +1,267 @@
-// A barra é a continuação do topo verde: sem ela, o hero começaria abaixo de
-// uma faixa branca e quebraria o bloco de cor do original.
 :host {
   display: block;
 }
 
-mat-toolbar {
-  background: var(--forest-950);
-  color: #fff;
-}
-
-.layout-titulo {
-  margin-right: 2rem;
-  font-size: 1.05rem;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-}
-
-.layout-menu {
+// A casca ocupa a viewport inteira e só o conteúdo rola: a barra lateral e o
+// cabeçalho ficam parados, como em painel administrativo.
+.casca {
   display: flex;
-  gap: 0.25rem;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--pagina);
+}
 
-  a {
-    color: rgba(255, 255, 255, 0.82);
-    font-weight: 700;
+// ---------------------------------------------------------- barra lateral
+.barra {
+  display: flex;
+  flex: 0 0 var(--barra-largura);
+  flex-direction: column;
+  width: var(--barra-largura);
+  color: #fff;
+  background: var(--marca-900);
+}
+
+.barra-marca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 26px 22px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.marca-simbolo {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  color: var(--marca-950);
+  background: var(--acento);
+  border-radius: var(--raio-md);
+  font-size: 1.05rem;
+  font-weight: 900;
+}
+
+.marca-nome {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.barra-menu {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 14px;
+  overflow-y: auto;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  color: rgba(255, 255, 255, 0.66);
+  border-radius: var(--raio-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.15s, color 0.15s;
+
+  mat-icon {
+    flex: 0 0 20px;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+
+  &:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.07);
   }
 }
 
-.layout-link-ativo {
-  color: #fff !important;
-  background-color: rgba(255, 255, 255, 0.12);
+// Estado ativo: fundo mais claro e a barra de acento à esquerda, para achar a
+// tela atual sem ler o texto.
+.menu-item-ativo,
+.menu-item-ativo:hover {
+  position: relative;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.13);
+  font-weight: 700;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -14px;
+    width: 3px;
+    height: 22px;
+    background: var(--acento);
+    border-radius: 0 3px 3px 0;
+    transform: translateY(-50%);
+  }
 }
 
-.layout-espaco {
+.barra-rodape {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 18px 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.688rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ponto-ativo {
+  width: 7px;
+  height: 7px;
+  background: var(--acento);
+  border-radius: 50%;
+}
+
+// -------------------------------------------------------- coluna principal
+.coluna {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.cabecalho {
+  display: flex;
+  flex: 0 0 var(--cabecalho-altura);
+  align-items: center;
+  gap: 8px;
+  height: var(--cabecalho-altura);
+  padding: 0 26px;
+  background: var(--superficie);
+  border-bottom: 1px solid var(--linha);
+}
+
+.cabecalho-espaco {
   flex: 1 1 auto;
 }
 
-// Sem padding: a faixa hero precisa ir de ponta a ponta. Cada tela decide
-// seu recuo envolvendo o conteúdo em .main-content.
-.layout-conteudo {
-  display: block;
+// O botão de gaveta só existe no mobile; no desktop a barra está sempre visível.
+.botao-gaveta {
+  display: none;
 }
 
-.layout-conta {
+.conta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px 6px 14px;
+  color: inherit;
+  background: none;
+  border: none;
+  border-radius: var(--raio-lg);
+  cursor: pointer;
+  font: inherit;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background: var(--pagina);
+  }
+}
+
+.conta-texto {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  line-height: 1.2;
-  margin-right: 1rem;
+  line-height: 1.25;
 
   strong {
-    font: var(--mat-sys-body-medium);
+    font-size: 0.813rem;
+    font-weight: 700;
   }
 
   small {
-    font: var(--mat-sys-body-small);
-    opacity: 0.75;
+    color: var(--tinta-tenue);
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+}
+
+.conta-avatar {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  color: var(--marca-900);
+  background: var(--marca-50);
+  border-radius: var(--raio-md);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.conta-seta {
+  color: var(--tinta-tenue);
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+// Teto de largura: sem ele, em monitor largo a linha da tabela estica até virar
+// um vão entre a primeira e a última coluna.
+.conteudo {
+  align-self: center;
+  flex: 1;
+  width: 100%;
+  max-width: 1480px;
+  padding: 30px;
+  overflow-y: auto;
+}
+
+.veu {
+  display: none;
+}
+
+// ------------------------------------------------------------------ mobile
+@media (max-width: 960px) {
+  .barra {
+    position: fixed;
+    z-index: 60;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    transform: translateX(-100%);
+    transition: transform 0.22s ease;
+  }
+
+  .casca-aberta .barra {
+    transform: translateX(0);
+  }
+
+  .botao-gaveta {
+    display: inline-flex;
+  }
+
+  .casca-aberta .veu {
+    display: block;
+    position: fixed;
+    z-index: 50;
+    inset: 0;
+    background: rgba(17, 24, 39, 0.45);
+  }
+
+  .conta-texto {
+    display: none;
+  }
+
+  .conteudo {
+    padding: 20px 16px;
+  }
+
+  .cabecalho {
+    padding: 0 14px;
   }
 }

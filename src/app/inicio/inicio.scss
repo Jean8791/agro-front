@@ -1,12 +1,59 @@
 .inicio-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
   gap: 20px;
-  align-items: start;
+  align-items: stretch;
+}
+
+// Flex em coluna com a ação empurrada para baixo: os cartões terminam na mesma
+// linha mesmo com descrições de tamanhos diferentes.
+.inicio-card {
+  display: flex;
+  flex-direction: column;
+  padding: 26px;
+
+  h2 {
+    margin: 6px 0 0;
+    font-size: 1.125rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .intro {
+    margin: 8px 0 0;
+  }
+}
+
+// O que ainda não existe fica visível, mas sem convidar ao clique.
+.inicio-card-inativo {
+  background: #fbfcfc;
+  box-shadow: none;
+
+  .inicio-icone {
+    color: var(--tinta-tenue);
+    background: #f3f4f4;
+  }
+}
+
+.inicio-icone {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 18px;
+  color: var(--marca-900);
+  background: var(--marca-50);
+  border-radius: var(--raio-lg);
 }
 
 .inicio-acao {
-  margin-top: 20px;
+  align-self: flex-start;
+  margin-top: 22px;
   min-height: 44px;
   font-weight: 800;
+}
+
+.inicio-pendente {
+  align-self: flex-start;
+  margin-top: 22px;
 }

@@ -1,6 +1,6 @@
-.grid-wrapper {
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
+// O grid é um cartão: o `overflow: hidden` faz o canto largo valer também para
+// a primeira e a última linha da tabela.
+.grid-cartao {
   overflow: hidden;
 }
 
@@ -9,48 +9,171 @@
   overflow-x: auto;
 }
 
-// Fundo branco explícito: a paleta verde deixa a superfície padrão do
-// Material esverdeada, e aí a linha selecionada não se destaca.
+// Fundo branco explícito: a paleta da marca deixa a superfície padrão do
+// Material esverdeada.
 table {
   width: 100%;
-  background: #fff;
+  background: var(--superficie);
 }
 
+// Cabeçalho preso no topo da rolagem, em cinza claro e caixa-alta miúda.
 th {
-  background: #fff;
-  font-weight: 800;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #fafbfb;
+  border-bottom: 1px solid var(--linha) !important;
+  color: var(--tinta-tenue) !important;
+  font-size: 0.688rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
-.grid-linha {
-  cursor: pointer;
+td {
+  border-bottom-color: var(--linha) !important;
+  color: var(--tinta-media) !important;
+  font-size: 0.875rem !important;
+}
 
-  &:hover {
-    background-color: var(--forest-50);
-  }
+.grid-linha:last-of-type td {
+  border-bottom: none !important;
+}
+
+.grid-linha:hover {
+  background-color: #fafbfb;
+}
+
+// Só o modo selecionável dá indício de que a linha responde ao clique.
+.grid-linha-clicavel {
+  cursor: pointer;
 }
 
 .grid-linha-selecionada,
 .grid-linha-selecionada:hover {
-  background-color: var(--forest-100);
+  background-color: var(--marca-50);
 }
 
-mat-paginator {
-  background: #fff;
+// ------------------------------------------------------------------ células
+.celula {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 5px 0;
 }
 
-.grid-aviso {
-  margin: 0;
-  padding: 1.75rem 1rem;
-  text-align: center;
-  color: var(--muted);
+// Círculo de iniciais que dá rosto à coluna que identifica o registro.
+.celula-avatar {
+  display: grid;
+  place-items: center;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  color: var(--marca-900);
+  background: var(--marca-50);
+  border: 1px solid var(--marca-100);
+  border-radius: 50%;
+  font-size: 0.688rem;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
-.grid-aviso.status-red {
-  color: var(--red);
+.celula-texto {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.35;
+}
+
+.celula-valor {
+  color: var(--tinta);
   font-weight: 600;
 }
 
+.celula-apoio {
+  color: var(--tinta-tenue);
+  font-size: 0.75rem;
+}
+
+// ------------------------------------------------------------------- ações
+.coluna-acoes {
+  width: 1%;
+  text-align: right !important;
+  white-space: nowrap;
+}
+
+.celula-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+}
+
+// Cinza em repouso, colorida no hover: a linha não vira um mostruário de cores.
+.acao {
+  --mat-icon-button-icon-color: var(--tinta-tenue);
+  --mat-icon-button-state-layer-color: currentColor;
+
+  &:hover:not([disabled]) {
+    --mat-icon-button-icon-color: var(--marca-700);
+  }
+
+  &.primario:hover:not([disabled]) {
+    --mat-icon-button-icon-color: var(--azul);
+  }
+
+  &.perigo:hover:not([disabled]) {
+    --mat-icon-button-icon-color: var(--vermelho);
+  }
+}
+
+// -------------------------------------------------------- vazio, erro, espera
+.grid-aviso {
+  margin: 0;
+  padding: 3rem 1rem;
+  color: var(--tinta-tenue);
+  font-size: 0.875rem;
+  font-style: italic;
+  text-align: center;
+}
+
+.grid-aviso-erro {
+  color: var(--vermelho);
+  font-style: normal;
+  font-weight: 600;
+}
+
+.grid-esqueleto {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 24px;
+
+  span {
+    height: 46px;
+    background: #f1f4f4;
+    border-radius: var(--raio-md);
+    animation: grid-pulso 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes grid-pulso {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grid-esqueleto span {
+    animation: none;
+  }
+}
+
 mat-paginator {
-  border-top: 1px solid var(--line);
+  background: #fcfdfd;
+  border-top: 1px solid var(--linha);
 }

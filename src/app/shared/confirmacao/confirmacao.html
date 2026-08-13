@@ -6,7 +6,12 @@
 
 <mat-dialog-actions align="end">
   <button matButton (click)="cancelar()">{{ data.textoCancelar }}</button>
-  <button matButton="filled" (click)="confirmar()" cdkFocusInitial>
+  <button
+    matButton="filled"
+    [class.botao-perigo]="data.perigo"
+    (click)="confirmar()"
+    cdkFocusInitial
+  >
     {{ data.textoConfirmar }}
   </button>
 </mat-dialog-actions>

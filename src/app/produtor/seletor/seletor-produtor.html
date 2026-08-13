@@ -1,0 +1,36 @@
+<button
+  class="seletor"
+  [class.seletor-vazio]="!selecionado()"
+  [matMenuTriggerFor]="menu"
+  aria-label="Trocar de produtor"
+>
+  <mat-icon class="seletor-icone">agriculture</mat-icon>
+
+  <span class="seletor-texto">
+    <small>Produtor</small>
+    <strong>{{ selecionado()?.nome ?? 'Selecione…' }}</strong>
+  </span>
+
+  <mat-icon class="seletor-seta">expand_more</mat-icon>
+</button>
+
+<mat-menu #menu="matMenu" class="seletor-menu">
+  @if (carregando()) {
+    <span class="seletor-aviso">Carregando…</span>
+  } @else if (!ordenados().length) {
+    <span class="seletor-aviso">Nenhum produtor cadastrado.</span>
+  } @else {
+    @for (produtor of ordenados(); track produtor.id) {
+      <button mat-menu-item (click)="selecionar(produtor)">
+        <span class="seletor-item">
+          <span class="seletor-nome">{{ produtor.nome }}</span>
+          @if (!produtor.ativo) {
+            <span class="pill cinza">Inativo</span>
+          } @else if (produtor.id === selecionado()?.id) {
+            <mat-icon class="seletor-check">check</mat-icon>
+          }
+        </span>
+      </button>
+    }
+  }
+</mat-menu>
