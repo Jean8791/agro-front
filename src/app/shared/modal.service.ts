@@ -17,12 +17,14 @@ export class Modal {
 
   confirmation(
     mensagem: string,
-    opcoes: { textoConfirmar?: string; textoCancelar?: string } = {},
+    opcoes: { textoConfirmar?: string; textoCancelar?: string; perigo?: boolean } = {},
   ): Observable<void> {
     const data: ConfirmacaoData = {
       mensagem,
       textoConfirmar: opcoes.textoConfirmar ?? 'Confirmar',
       textoCancelar: opcoes.textoCancelar ?? 'Cancelar',
+      // pinta o botão de vermelho: o que destrói não deve sair na cor da marca
+      perigo: opcoes.perigo ?? false,
     };
 
     return this.dialog

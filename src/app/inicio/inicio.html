@@ -1,48 +1,32 @@
-<section class="hero">
-  <div class="hero-inner">
-    <div class="brand-row">
-      <span class="brand-mark">AGRO</span>
-      <div>
-        <span class="eyebrow">Ferramenta de apoio à decisão</span>
-        <h1>Decida com os números da sua produção</h1>
-      </div>
+<div class="pagina">
+  <header class="pagina-cabecalho">
+    <div>
+      <h1>Decida com os números da sua produção</h1>
+      <p>
+        Reúna custo, produção e preço no mesmo lugar para saber onde a conta fecha — antes de
+        negociar.
+      </p>
     </div>
+  </header>
 
-    <p class="hero-copy">
-      Reúna custo, produção e preço no mesmo lugar para saber onde a conta fecha — antes de
-      negociar.
-    </p>
-
-    <div class="hero-badges">
-      <span>Produção vegetal e animal</span>
-      <span>Dados da sua propriedade</span>
-      @if (usuario(); as logado) {
-        <span>{{ logado.email }}</span>
-      }
-    </div>
-  </div>
-</section>
-
-<div class="main-content">
   <div class="inicio-cards">
     @for (atalho of atalhos(); track atalho.titulo) {
-      <article class="card">
-        <div class="card-heading">
-          <span class="step-number" [class.neutral]="!atalho.disponivel">{{ $index + 1 }}</span>
-          <div>
-            <span class="eyebrow">{{ atalho.etapa }}</span>
-            <h2>{{ atalho.titulo }}</h2>
-          </div>
-        </div>
+      <article class="cartao inicio-card" [class.inicio-card-inativo]="!atalho.disponivel">
+        <span class="inicio-icone">
+          <mat-icon>{{ atalho.icone }}</mat-icon>
+        </span>
 
-        <p class="section-intro">{{ atalho.descricao }}</p>
+        <span class="rotulo-micro">{{ atalho.etapa }}</span>
+        <h2>{{ atalho.titulo }}</h2>
+        <p class="intro">{{ atalho.descricao }}</p>
 
         @if (atalho.disponivel) {
           <a matButton="filled" [routerLink]="atalho.rota" class="inicio-acao">
             {{ atalho.acao }}
+            <mat-icon iconPositionEnd>arrow_forward</mat-icon>
           </a>
         } @else {
-          <p class="field-help">Ainda não disponível.</p>
+          <span class="pill cinza inicio-pendente">Em breve</span>
         }
       </article>
     }

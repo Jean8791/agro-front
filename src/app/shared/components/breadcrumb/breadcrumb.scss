@@ -1,13 +1,16 @@
+// Trilha miúda acima do título da tela: ela orienta, mas não compete com o h1.
 .breadcrumb {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
-  font: var(--mat-sys-body-medium);
+  gap: 0.375rem;
+  margin-bottom: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 .breadcrumb a {
-  color: var(--mat-sys-primary);
+  color: var(--marca-700);
   text-decoration: none;
 
   &:hover {
@@ -16,9 +19,10 @@
 }
 
 .breadcrumb-atual {
-  color: var(--mat-sys-on-surface-variant);
+  color: var(--tinta-tenue);
 }
 
 .breadcrumb-separador {
-  color: var(--mat-sys-outline);
+  color: var(--tinta-tenue);
+  opacity: 0.6;
 }

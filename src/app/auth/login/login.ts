@@ -5,7 +5,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { mensagemDoErro } from '../../shared/erro';
 import { AuthService } from '../auth.service';
@@ -18,7 +17,6 @@ import { AuthService } from '../auth.service';
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
-    MatProgressBarModule,
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss',

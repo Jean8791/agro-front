@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, catchError, of, shareReplay, tap, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { TenantContext } from '../shared/tenant';
 import { LoginRequest } from './models/login-request';
 import { LoginResponse } from './models/login-response';
 import { TokenStorage } from './token-storage';
@@ -10,6 +11,7 @@ import { TokenStorage } from './token-storage';
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly storage = inject(TokenStorage);
+  private readonly tenant = inject(TenantContext);
 
   private readonly url = `${environment.apiUrl}/auth`;
 
@@ -66,6 +68,8 @@ export class AuthService {
   sair(): Observable<void> {
     const refreshToken = this.storage.refreshToken;
     this.storage.limpar();
+    // o produtor escolhido é da sessão: não pode sobrar para quem logar depois
+    this.tenant.limpar();
 
     if (!refreshToken) {
       return of(undefined);
