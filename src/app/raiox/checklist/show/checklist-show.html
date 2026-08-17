@@ -1,0 +1,52 @@
+<div class="pagina">
+  <header class="pagina-cabecalho">
+    <div>
+      <app-breadcrumb [steps]="steps()" />
+      <h1>{{ inserindo() ? 'Novo item de checklist' : 'Editar item de checklist' }}</h1>
+      <p>Aparece como apoio dentro da calculadora, para o módulo escolhido.</p>
+    </div>
+  </header>
+
+  <div class="cartao formulario">
+    @if (loading()) {
+      <app-loader />
+    }
+
+    <form [formGroup]="form" (ngSubmit)="salvar()">
+      <div class="cartao-corpo">
+        <div class="linha">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-modulo">
+            <mat-label>Módulo</mat-label>
+            <mat-select formControlName="modulo">
+              <mat-option value="VEGETAL">Vegetal</mat-option>
+              <mat-option value="ANIMAL">Animal</mat-option>
+              <mat-option value="AMBOS">Ambos</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-rotulo">
+            <mat-label>Custo</mat-label>
+            <input matInput formControlName="rotulo" placeholder="Ex.: Sementes ou mudas" />
+            @if (form.controls.rotulo.hasError('required') && form.controls.rotulo.touched) {
+              <mat-error>Informe o custo</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="linha">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-nota">
+            <mat-label>Observação prática</mat-label>
+            <textarea matInput formControlName="nota" rows="2"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="cartao-rodape rodape">
+        <button matButton type="button" (click)="voltar()">Cancelar</button>
+        <button matButton="filled" type="submit" [disabled]="salvando()">
+          {{ salvando() ? 'Salvando…' : 'Salvar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

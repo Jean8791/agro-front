@@ -11,7 +11,18 @@ export type Permissao =
   | 'PAPEL_LISTAR'
   | 'PAPEL_INSERIR'
   | 'PAPEL_EDITAR'
-  | 'PAPEL_EXCLUIR';
+  | 'PAPEL_EXCLUIR'
+  | 'RAIOXPRODUTO_LISTAR'
+  | 'RAIOXPRODUTO_INSERIR'
+  | 'RAIOXPRODUTO_EDITAR'
+  | 'RAIOXPRODUTO_EXCLUIR'
+  | 'RAIOXCHECKLIST_LISTAR'
+  | 'RAIOXCHECKLIST_INSERIR'
+  | 'RAIOXCHECKLIST_EDITAR'
+  | 'RAIOXCHECKLIST_EXCLUIR'
+  | 'RAIOXSIMULACAO_LISTAR'
+  | 'RAIOXSIMULACAO_INSERIR'
+  | 'RAIOXSIMULACAO_EXCLUIR';
 
 /**
  * O código `recurso:acao` que viaja na claim `groups` do token — é isso que o
@@ -30,7 +41,18 @@ export type CodigoPermissao =
   | 'papel:listar'
   | 'papel:inserir'
   | 'papel:editar'
-  | 'papel:excluir';
+  | 'papel:excluir'
+  | 'raioxproduto:listar'
+  | 'raioxproduto:inserir'
+  | 'raioxproduto:editar'
+  | 'raioxproduto:excluir'
+  | 'raioxchecklist:listar'
+  | 'raioxchecklist:inserir'
+  | 'raioxchecklist:editar'
+  | 'raioxchecklist:excluir'
+  | 'raioxsimulacao:listar'
+  | 'raioxsimulacao:inserir'
+  | 'raioxsimulacao:excluir';
 
 /** Converte a constante do DTO no código que o token carrega. */
 export function codigoDaPermissao(permissao: Permissao): CodigoPermissao {

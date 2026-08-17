@@ -1,0 +1,66 @@
+<div class="pagina">
+  <header class="pagina-cabecalho">
+    <div>
+      <app-breadcrumb [steps]="steps()" />
+      <h1>{{ inserindo() ? 'Novo produtor' : 'Editar produtor' }}</h1>
+      <p>O produtor é o cliente que assina o produto — cada um com suas propriedades e usuários.</p>
+    </div>
+  </header>
+
+  <div class="cartao formulario">
+    @if (loading()) {
+      <app-loader />
+    }
+
+    <form [formGroup]="form" (ngSubmit)="salvar()">
+      <div class="cartao-corpo">
+        <div class="linha">
+          <mat-form-field appearance="outline" class="campo-nome">
+            <mat-label>Nome</mat-label>
+            <input matInput formControlName="nome" />
+            @if (form.controls.nome.hasError('required') && form.controls.nome.touched) {
+              <mat-error>Informe o nome</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="campo-tipo">
+            <mat-label>Tipo</mat-label>
+            <mat-select formControlName="tipoPessoa">
+              <mat-option value="PF">Pessoa física</mat-option>
+              <mat-option value="PJ">Pessoa jurídica</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="linha">
+          <mat-form-field appearance="outline" class="campo-documento">
+            <mat-label>{{ form.controls.tipoPessoa.value === 'PF' ? 'CPF' : 'CNPJ' }}</mat-label>
+            <input
+              matInput
+              inputmode="numeric"
+              maxlength="14"
+              formControlName="documento"
+              #campoDocumento
+              (input)="aoDigitarDocumento(campoDocumento.value)"
+            />
+            @if (
+              form.controls.documento.hasError('required') && form.controls.documento.touched
+            ) {
+              <mat-error>Informe o documento</mat-error>
+            } @else if (form.controls.documento.hasError('pattern')) {
+              <mat-error>Informe só os números — 11 dígitos no CPF, 14 no CNPJ</mat-error>
+            }
+            <mat-hint>Só números, sem pontuação.</mat-hint>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="cartao-rodape rodape">
+        <button matButton type="button" (click)="voltar()">Cancelar</button>
+        <button matButton="filled" type="submit" [disabled]="salvando()">
+          {{ salvando() ? 'Salvando…' : 'Salvar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

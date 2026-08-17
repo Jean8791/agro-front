@@ -1,0 +1,31 @@
+.formulario {
+  max-width: 64rem;
+  overflow: hidden;
+}
+
+.linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.campo-categoria,
+.campo-produto,
+.campo-nota,
+.campo-fonte {
+  flex: 1 1 16rem;
+}
+
+.campo-modulo,
+.campo-unidade,
+.campo-quantidade,
+.campo-tipo-animal {
+  flex: 1 1 12rem;
+}
+
+.rodape {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  background: #fcfdfd;
+}
