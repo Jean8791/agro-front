@@ -1,0 +1,104 @@
+<div class="pagina">
+  <header class="pagina-cabecalho">
+    <div>
+      <app-breadcrumb [steps]="steps()" />
+      <h1>{{ simulacao()?.nome ?? 'Simulação' }}</h1>
+      <p>Foto de um cálculo feito na calculadora — não é possível editar, só refazer.</p>
+    </div>
+
+    <div class="pagina-acoes">
+      @if (permissoes.pode('raioxsimulacao:excluir')) {
+        <button class="botao-perigo" matButton (click)="excluir()" [disabled]="excluindo()">
+          <mat-icon>delete</mat-icon>
+          Excluir
+        </button>
+      }
+      <button matButton="filled" (click)="voltar()">
+        <mat-icon>arrow_back</mat-icon>
+        Voltar ao histórico
+      </button>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="cartao">
+      <app-loader />
+    </div>
+  } @else if (simulacao(); as simulacao) {
+    <div class="raiox-grade-show">
+      <section class="cartao">
+        <div class="cartao-cabecalho">
+          <span class="section-kicker">Dados informados</span>
+          <h2>O que foi preenchido</h2>
+        </div>
+        <dl class="cartao-corpo resumo-lista">
+          @for (linha of resumo(); track linha.rotulo) {
+            <div class="resumo-item">
+              <dt>{{ linha.rotulo }}</dt>
+              <dd>{{ linha.valor }}</dd>
+            </div>
+          }
+        </dl>
+      </section>
+
+      <section class="cartao">
+        <div class="cartao-cabecalho">
+          <span class="section-kicker">Resultado</span>
+          <h2>O raio-X desta simulação</h2>
+        </div>
+        <div class="cartao-corpo">
+          <div
+            class="semaforo"
+            [class.status-red]="simulacao.semaforo === 'RED'"
+            [class.status-yellow]="simulacao.semaforo === 'YELLOW'"
+            [class.status-green]="simulacao.semaforo === 'GREEN'"
+            [class.semaforo-vazio]="simulacao.semaforo === 'FILL'"
+          >
+            <mat-icon>
+              {{
+                simulacao.semaforo === 'GREEN'
+                  ? 'check_circle'
+                  : simulacao.semaforo === 'YELLOW'
+                    ? 'warning'
+                    : simulacao.semaforo === 'RED'
+                      ? 'error'
+                      : 'edit_note'
+              }}
+            </mat-icon>
+            <div>
+              <strong>{{ simulacao.resultado.mensagem }}</strong>
+              <p>{{ simulacao.resultado.acao }}</p>
+            </div>
+          </div>
+
+          <div class="indicadores-grade">
+            <div class="indicador">
+              <span class="rotulo-micro">Produção vendável</span>
+              <strong>{{ simulacao.resultado.producaoComercial?.toFixed(2) ?? '—' }}</strong>
+            </div>
+            <div class="indicador">
+              <span class="rotulo-micro">Custo total</span>
+              <strong>{{ simulacao.resultado.custoTotal !== null ? 'R$ ' + simulacao.resultado.custoTotal.toFixed(2) : '—' }}</strong>
+            </div>
+            <div class="indicador">
+              <span class="rotulo-micro">Preço mínimo</span>
+              <strong>{{ simulacao.precoMinimo !== null ? 'R$ ' + simulacao.precoMinimo.toFixed(2) : '—' }}</strong>
+            </div>
+            <div class="indicador">
+              <span class="rotulo-micro">Preço alvo com margem</span>
+              <strong>{{ simulacao.resultado.precoAlvo !== null ? 'R$ ' + simulacao.resultado.precoAlvo.toFixed(2) : '—' }}</strong>
+            </div>
+            <div class="indicador">
+              <span class="rotulo-micro">Receita esperada</span>
+              <strong>{{ simulacao.resultado.receitaEsperada !== null ? 'R$ ' + simulacao.resultado.receitaEsperada.toFixed(2) : '—' }}</strong>
+            </div>
+            <div class="indicador">
+              <span class="rotulo-micro">Resultado estimado</span>
+              <strong>{{ simulacao.resultado.resultadoEstimado !== null ? 'R$ ' + simulacao.resultado.resultadoEstimado.toFixed(2) : '—' }}</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  }
+</div>

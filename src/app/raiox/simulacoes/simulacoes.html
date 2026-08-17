@@ -1,0 +1,35 @@
+<div class="pagina">
+  <header class="pagina-cabecalho">
+    <div>
+      <h1>{{ entidade }}</h1>
+      <p>Toda simulação salva na calculadora, para comparar depois.</p>
+    </div>
+
+    <div class="pagina-acoes">
+      <button matButton="filled" routerLink="/raiox/calculadora">
+        <mat-icon>calculate</mat-icon>
+        Nova simulação
+      </button>
+    </div>
+  </header>
+
+  <div class="busca cartao">
+    <mat-icon>search</mat-icon>
+    <input
+      type="search"
+      placeholder="Pesquisar por nome ou produto…"
+      aria-label="Pesquisar simulações"
+      [ngModel]="termo()"
+      (ngModelChange)="termo.set($event)"
+    />
+  </div>
+
+  <app-grid
+    [colunas]="colunas"
+    [acoes]="acoes"
+    [carregar]="carregar"
+    [filtro]="filtro()"
+    modo="cliente"
+    mensagemVazia="Nenhuma simulação salva ainda."
+  />
+</div>

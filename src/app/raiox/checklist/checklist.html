@@ -1,0 +1,59 @@
+<div class="pagina">
+  <header class="pagina-cabecalho">
+    <div>
+      <h1>{{ entidade }}</h1>
+      <p>O que conferir antes de confiar no preço mínimo — aparece como apoio dentro da calculadora.</p>
+    </div>
+
+    <div class="pagina-acoes">
+      <button
+        *appSePode="'raioxchecklist:inserir'"
+        matButton="filled"
+        (click)="inserir()"
+        [disabled]="precisaEscolherProdutor()"
+      >
+        <mat-icon>add</mat-icon>
+        Novo item
+      </button>
+    </div>
+  </header>
+
+  <nav class="raiox-subnav">
+    <a routerLink="/raiox/calculadora">Calculadora</a>
+    <a routerLink="/raiox/produtos">Produtos</a>
+    <span class="raiox-subnav-ativo">Checklist de custos</span>
+  </nav>
+
+  @if (precisaEscolherProdutor()) {
+    <div class="cartao sem-produtor">
+      <span class="sem-produtor-icone">
+        <mat-icon>agriculture</mat-icon>
+      </span>
+      <h2>Escolha um produtor primeiro</h2>
+      <p class="intro">
+        Sua conta é de super admin e não pertence a um produtor. Use o seletor no topo da tela para
+        dizer sobre qual produtor você quer trabalhar — o checklist dele aparece aqui.
+      </p>
+    </div>
+  } @else {
+    <div class="busca cartao">
+      <mat-icon>search</mat-icon>
+      <input
+        type="search"
+        placeholder="Pesquisar por custo…"
+        aria-label="Pesquisar itens do checklist"
+        [ngModel]="termo()"
+        (ngModelChange)="termo.set($event)"
+      />
+    </div>
+
+    <app-grid
+      [colunas]="colunas"
+      [acoes]="acoes"
+      [carregar]="carregar"
+      [filtro]="filtro()"
+      modo="cliente"
+      mensagemVazia="Nenhum item de checklist cadastrado ainda — importe o catálogo padrão na tela de Produtos."
+    />
+  }
+</div>

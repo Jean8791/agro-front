@@ -1,0 +1,117 @@
+<div class="pagina">
+  <header class="pagina-cabecalho">
+    <div>
+      <app-breadcrumb [steps]="steps()" />
+      <h1>{{ inserindo() ? 'Novo produto' : 'Editar produto' }}</h1>
+      <p>As unidades definem como a calculadora converte produção técnica em unidade de venda.</p>
+    </div>
+  </header>
+
+  <div class="cartao formulario">
+    @if (loading()) {
+      <app-loader />
+    }
+
+    <form [formGroup]="form" (ngSubmit)="salvar()">
+      <div class="cartao-corpo">
+        <div class="linha">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-modulo">
+            <mat-label>Módulo</mat-label>
+            <mat-select formControlName="modulo">
+              <mat-option value="VEGETAL">Vegetal</mat-option>
+              <mat-option value="ANIMAL">Animal</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-categoria">
+            <mat-label>Categoria</mat-label>
+            <input matInput formControlName="categoria" placeholder="Ex.: Grão, Fruta, Bovinocultura" />
+            @if (form.controls.categoria.hasError('required') && form.controls.categoria.touched) {
+              <mat-error>Informe a categoria</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-produto">
+            <mat-label>Produto ou atividade</mat-label>
+            <input matInput formControlName="produto" placeholder="Ex.: Alface, Leite, Milho grão" />
+            @if (form.controls.produto.hasError('required') && form.controls.produto.touched) {
+              <mat-error>Informe o produto</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="linha">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-unidade">
+            <mat-label>Unidade técnica</mat-label>
+            <input matInput formControlName="unidadeTecnica" placeholder="kg, cabeça, litro…" />
+            @if (
+              form.controls.unidadeTecnica.hasError('required') && form.controls.unidadeTecnica.touched
+            ) {
+              <mat-error>Informe a unidade técnica</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-unidade">
+            <mat-label>Unidade comercial sugerida</mat-label>
+            <input matInput formControlName="unidadeComercial" placeholder="caixa, saca, dúzia…" />
+            @if (
+              form.controls.unidadeComercial.hasError('required') &&
+              form.controls.unidadeComercial.touched
+            ) {
+              <mat-error>Informe a unidade comercial</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-quantidade">
+            <mat-label>Quantidade por unidade</mat-label>
+            <input matInput type="number" step="0.0001" formControlName="quantidadePorUnidade" />
+            <mat-hint>Ex.: caixa de 20 pés, saca de 60 kg.</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-unidade">
+            <mat-label>Unidade para preço mínimo</mat-label>
+            <input matInput formControlName="unidadePreco" placeholder="R$/saca, R$/kg…" />
+            @if (
+              form.controls.unidadePreco.hasError('required') && form.controls.unidadePreco.touched
+            ) {
+              <mat-error>Informe a unidade de preço</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        @if (ehAnimal()) {
+          <div class="linha">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-tipo-animal">
+              <mat-label>Tipo de produção animal</mat-label>
+              <mat-select formControlName="tipoProducaoAnimal">
+                <mat-option [value]="null">Não se aplica</mat-option>
+                <mat-option value="CONTINUA">Contínua (produção diária no período)</mat-option>
+                <mat-option value="LOTE">Lote (venda por peso ou por cabeça)</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        }
+
+        <div class="linha">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-nota">
+            <mat-label>Observação</mat-label>
+            <textarea matInput formControlName="nota" rows="2"></textarea>
+            <mat-hint>Orienta quem preenche a calculadora — regionalização, padrão de embalagem etc.</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-fonte">
+            <mat-label>Fonte</mat-label>
+            <input matInput formControlName="fonte" placeholder="Link da referência de preço" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="cartao-rodape rodape">
+        <button matButton type="button" (click)="voltar()">Cancelar</button>
+        <button matButton="filled" type="submit" [disabled]="salvando()">
+          {{ salvando() ? 'Salvando…' : 'Salvar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
