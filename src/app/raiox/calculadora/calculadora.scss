@@ -1,0 +1,204 @@
+// Duas telas irmãs (produtos e checklist) trocam de uma pra outra sem virar
+// item de menu à parte — este sub-nav é o elo entre elas e a calculadora.
+// (mesmo bloco de produto.scss/checklist.scss — repetido de propósito: são
+// telas do mesmo domínio, não vale a pena subir pra shared/ por isso.)
+.raiox-subnav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px;
+  margin-bottom: 4px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+
+  a {
+    padding: 6px 10px;
+    color: var(--tinta-fraca);
+    text-decoration: none;
+    border-radius: var(--raio-md);
+
+    &:hover {
+      color: var(--tinta);
+      background: var(--pagina);
+    }
+  }
+}
+
+.raiox-subnav-ativo {
+  padding: 6px 10px;
+  color: var(--marca-100);
+  background: var(--marca-50);
+  border-radius: var(--raio-md);
+}
+
+// ---------------------------------------------------------- layout em duas colunas
+.raiox-grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  align-items: start;
+  gap: 20px;
+
+  @media (max-width: 1100px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.raiox-coluna {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.raiox-resultado {
+  position: sticky;
+  top: 20px;
+
+  @media (max-width: 1100px) {
+    position: static;
+  }
+}
+
+.linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  & + .linha {
+    margin-top: 1rem;
+  }
+}
+
+.campo-sm {
+  flex: 1 1 11rem;
+}
+
+.campo-md {
+  flex: 1 1 14rem;
+}
+
+.campo-lg {
+  flex: 1 1 18rem;
+}
+
+.custos-linha {
+  row-gap: 0.75rem;
+}
+
+.campo-custo {
+  flex: 1 1 9rem;
+}
+
+// ------------------------------------------------------------- checklist de apoio
+.checklist-apoio {
+  border-top: 1px solid var(--linha);
+}
+
+.checklist-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 4px 16px;
+  margin-top: 10px;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 6px 0;
+  cursor: pointer;
+
+  strong {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+
+  small {
+    display: block;
+    color: var(--tinta-fraca);
+    font-size: 0.75rem;
+  }
+}
+
+// ------------------------------------------------------------------ semáforo
+.semaforo {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px;
+  border-radius: var(--raio-lg);
+
+  mat-icon {
+    flex: 0 0 28px;
+    width: 28px;
+    height: 28px;
+    font-size: 28px;
+  }
+
+  strong {
+    display: block;
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 4px 0 0;
+    font-size: 0.8125rem;
+  }
+}
+
+.semaforo-vazio {
+  color: var(--tinta-fraca);
+  background: var(--pagina);
+}
+
+.lista-avisos {
+  margin: 14px 0 0;
+  padding-left: 1.1rem;
+  color: var(--ambar);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.lista-erros {
+  color: var(--vermelho);
+}
+
+// --------------------------------------------------------------- indicadores
+.indicadores-grade {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 18px;
+
+  .indicador {
+    padding: 14px;
+
+    .indicador-icone {
+      width: 34px;
+      height: 34px;
+      margin-bottom: 8px;
+
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    strong {
+      font-size: 1.0625rem;
+    }
+  }
+}
+
+.rodape-salvar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #fcfdfd;
+}
+
+.campo-nome-simulacao {
+  width: 100%;
+}

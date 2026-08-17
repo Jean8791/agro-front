@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { authGuard } from './auth/auth.guard';
 import { authRoutes } from './auth/auth.routes';
 import { papelRoutes } from './papel/papel.routes';
+import { produtorRoutes } from './produtor/produtor.routes';
+import { raioxRoutes } from './raiox/raiox.routes';
 import { usuarioRoutes } from './usuario/usuario.routes';
 
 export const routes: Routes = [
@@ -19,6 +21,8 @@ export const routes: Routes = [
       },
       ...usuarioRoutes,
       ...papelRoutes,
+      ...produtorRoutes,
+      ...raioxRoutes,
     ],
   },
   { path: '**', redirectTo: '' },

@@ -1,0 +1,26 @@
+.formulario {
+  max-width: 48rem;
+  overflow: hidden;
+}
+
+.linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.campo-modulo {
+  flex: 1 1 10rem;
+}
+
+.campo-rotulo,
+.campo-nota {
+  flex: 1 1 20rem;
+}
+
+.rodape {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  background: #fcfdfd;
+}

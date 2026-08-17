@@ -34,3 +34,16 @@ export function permissaoGuard(permissao: CodigoPermissao): CanActivateFn {
     return storage.pode(permissao) ? true : router.createUrlTree(['/inicio']);
   };
 }
+
+/**
+ * Exige super admin. Produtor é entidade do produto, não de um papel dentro
+ * dele — por isso não tem `CodigoPermissao`, e a checagem é o marcador
+ * `superAdmin` em vez de `pode()`. Mesmo espírito do `permissaoGuard`: só
+ * evita mostrar tela que o back barraria, aqui com `@RolesAllowed(SUPER_ADMIN)`.
+ */
+export const superAdminGuard: CanActivateFn = () => {
+  const storage = inject(TokenStorage);
+  const router = inject(Router);
+
+  return storage.usuario()?.superAdmin === true ? true : router.createUrlTree(['/inicio']);
+};

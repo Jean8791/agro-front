@@ -1,0 +1,91 @@
+// Duas telas irmãs (produtos e checklist) trocam de uma pra outra sem virar
+// item de menu à parte — este sub-nav é o elo entre elas e a calculadora.
+.raiox-subnav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+
+  a {
+    padding: 6px 10px;
+    color: var(--tinta-fraca);
+    text-decoration: none;
+    border-radius: var(--raio-md);
+
+    &:hover {
+      color: var(--tinta);
+      background: var(--pagina);
+    }
+  }
+}
+
+.raiox-subnav-ativo {
+  padding: 6px 10px;
+  color: var(--marca-100);
+  background: var(--marca-50);
+  border-radius: var(--raio-md);
+}
+
+.busca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 18px;
+
+  mat-icon {
+    flex: 0 0 20px;
+    color: var(--tinta-tenue);
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  input {
+    flex: 1;
+    padding: 15px 0;
+    color: var(--tinta);
+    background: none;
+    border: none;
+    font: inherit;
+    font-size: 0.875rem;
+    outline: none;
+
+    &::placeholder {
+      color: var(--tinta-tenue);
+    }
+  }
+
+  &:focus-within {
+    border-color: var(--marca-100);
+    box-shadow: 0 0 0 4px var(--marca-50);
+  }
+}
+
+.sem-produtor {
+  padding: 56px 32px;
+  text-align: center;
+
+  h2 {
+    margin: 18px 0 0;
+    font-size: 1.125rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .intro {
+    margin: 8px auto 0;
+    max-width: 34rem;
+  }
+}
+
+.sem-produtor-icone {
+  display: inline-grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  color: var(--ambar);
+  background: var(--ambar-suave);
+  border-radius: var(--raio-lg);
+}

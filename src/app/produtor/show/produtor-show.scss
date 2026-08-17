@@ -1,0 +1,28 @@
+// Mesma anatomia do formulário de usuário: largura contida, campos que
+// quebram linha em telas estreitas.
+.formulario {
+  max-width: 56rem;
+  overflow: hidden;
+}
+
+.linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.campo-nome,
+.campo-documento {
+  flex: 1 1 20rem;
+}
+
+.campo-tipo {
+  flex: 1 1 14rem;
+}
+
+.rodape {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  background: #fcfdfd;
+}

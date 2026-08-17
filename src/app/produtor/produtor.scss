@@ -1,0 +1,37 @@
+// Mesma anatomia da listagem de usuários e papéis: barra de busca fina sobre
+// a tabela. Sem o aviso de "escolha um produtor" — quem chega aqui é quem
+// escolhe produtor para os outros, não quem depende de um estar escolhido.
+.busca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 18px;
+
+  mat-icon {
+    flex: 0 0 20px;
+    color: var(--tinta-tenue);
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  input {
+    flex: 1;
+    padding: 15px 0;
+    color: var(--tinta);
+    background: none;
+    border: none;
+    font: inherit;
+    font-size: 0.875rem;
+    outline: none;
+
+    &::placeholder {
+      color: var(--tinta-tenue);
+    }
+  }
+
+  &:focus-within {
+    border-color: var(--marca-100);
+    box-shadow: 0 0 0 4px var(--marca-50);
+  }
+}

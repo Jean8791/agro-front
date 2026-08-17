@@ -1,0 +1,68 @@
+<div class="pagina">
+  <header class="pagina-cabecalho">
+    <div>
+      <h1>{{ entidade }}</h1>
+      <p>Os produtos e atividades que a calculadora oferece, com as unidades de cada um.</p>
+    </div>
+
+    <div class="pagina-acoes">
+      <button
+        *appSePode="'raioxproduto:inserir'"
+        matButton
+        (click)="semearPadrao()"
+        [disabled]="semeando() || precisaEscolherProdutor()"
+      >
+        <mat-icon>download</mat-icon>
+        {{ semeando() ? 'Importando…' : 'Importar catálogo padrão' }}
+      </button>
+      <button
+        *appSePode="'raioxproduto:inserir'"
+        matButton="filled"
+        (click)="inserir()"
+        [disabled]="precisaEscolherProdutor()"
+      >
+        <mat-icon>add</mat-icon>
+        Novo produto
+      </button>
+    </div>
+  </header>
+
+  <nav class="raiox-subnav">
+    <a routerLink="/raiox/calculadora">Calculadora</a>
+    <span class="raiox-subnav-ativo">Produtos</span>
+    <a routerLink="/raiox/checklist">Checklist de custos</a>
+  </nav>
+
+  @if (precisaEscolherProdutor()) {
+    <div class="cartao sem-produtor">
+      <span class="sem-produtor-icone">
+        <mat-icon>agriculture</mat-icon>
+      </span>
+      <h2>Escolha um produtor primeiro</h2>
+      <p class="intro">
+        Sua conta é de super admin e não pertence a um produtor. Use o seletor no topo da tela para
+        dizer sobre qual produtor você quer trabalhar — o catálogo dele aparece aqui.
+      </p>
+    </div>
+  } @else {
+    <div class="busca cartao">
+      <mat-icon>search</mat-icon>
+      <input
+        type="search"
+        placeholder="Pesquisar por produto ou categoria…"
+        aria-label="Pesquisar produtos"
+        [ngModel]="termo()"
+        (ngModelChange)="termo.set($event)"
+      />
+    </div>
+
+    <app-grid
+      [colunas]="colunas"
+      [acoes]="acoes"
+      [carregar]="carregar"
+      [filtro]="filtro()"
+      modo="cliente"
+      mensagemVazia="Nenhum produto cadastrado ainda — importe o catálogo padrão acima ou cadastre o primeiro."
+    />
+  }
+</div>

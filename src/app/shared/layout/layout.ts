@@ -8,18 +8,35 @@ import { Permissoes } from '../../auth/permissoes';
 import { CodigoPermissao } from '../../papel/models/permissao';
 import { SeletorProdutor } from '../../produtor/seletor/seletor-produtor';
 
-/** Um item da barra lateral. Sem `permissao`, todo mundo vê. */
+/**
+ * Um item da barra lateral. Sem `permissao` nem `apenasSuperAdmin`, todo
+ * mundo vê. Produtor usa `apenasSuperAdmin`: não tem `CodigoPermissao`, é
+ * papel de sistema (`SUPER_ADMIN`) no back.
+ */
 interface ItemDeMenu {
   rotulo: string;
   icone: string;
   rota: string;
   permissao?: CodigoPermissao;
+  apenasSuperAdmin?: boolean;
 }
 
 const MENU: ItemDeMenu[] = [
   { rotulo: 'Início', icone: 'space_dashboard', rota: '/inicio' },
   { rotulo: 'Usuários', icone: 'group', rota: '/usuarios', permissao: 'usuario:listar' },
   { rotulo: 'Papéis', icone: 'admin_panel_settings', rota: '/papeis', permissao: 'papel:listar' },
+  {
+    rotulo: 'Raio-X',
+    icone: 'calculate',
+    rota: '/raiox/calculadora',
+    permissao: 'raioxsimulacao:listar',
+  },
+  {
+    rotulo: 'Produtores',
+    icone: 'agriculture',
+    rota: '/produtores',
+    apenasSuperAdmin: true,
+  },
 ];
 
 /**
@@ -54,7 +71,12 @@ export class Layout {
 
   /** Esconde o que responderia 403 — a checagem de verdade é do back. */
   protected readonly menu = computed(() =>
-    MENU.filter((item) => !item.permissao || this.permissoes.pode(item.permissao)),
+    MENU.filter((item) => {
+      if (item.apenasSuperAdmin) {
+        return this.superAdmin();
+      }
+      return !item.permissao || this.permissoes.pode(item.permissao);
+    }),
   );
 
   /** Duas primeiras letras do e-mail, para o avatar do cabeçalho. */
