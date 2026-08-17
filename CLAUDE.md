@@ -33,9 +33,26 @@ src/app/
     show/                          FORMULÁRIO: nome + matriz recurso x ação
 
   produtor/                     -> domínio do produto (só super admin acessa)
-    produtor.service.ts            resource: GET /produtores
-    seletor/                       o seletor do cabeçalho
+    produtor.ts / .html / .scss    LISTAGEM
+    produtor.service.ts            resource: CRUD + inativar/reativar
+    produtor.routes.ts             guarda por superAdminGuard, não permissaoGuard
     models/produtor.ts
+    show/                          FORMULÁRIO: nome, documento (CPF/CNPJ), tipo
+    seletor/                       o seletor do cabeçalho
+
+  raiox/                        -> domínio: Raio-X do Preço Mínimo (calculadora)
+    raiox.routes.ts                agrega as rotas dos 3 sub-domínios abaixo
+    produto/                       LISTAGEM+FORMULÁRIO: catálogo de produtos/unidades
+      produto.ts/.html/.scss  produto.service.ts  models/produto.ts  show/
+    checklist/                     LISTAGEM+FORMULÁRIO: checklist de custos
+      checklist.ts/.html/.scss  checklist.service.ts  models/  show/
+    calculadora/                   a ferramenta em si — formulário + resultado
+      calculadora.ts/.html/.scss     estado (reactive forms + signals)
+      calculo.ts                     fórmula pura, sem Angular — ver testes
+      calculo.spec.ts
+      models/simulacao.ts            tipos do formulário/resultado + DTOs
+      simulacao.service.ts           salvar/listar/buscar/excluir simulações
+    simulacoes/                    LISTAGEM (histórico) + show/ (visão só leitura)
 
   auth/                         -> técnico acoplado a usuario (login/JWT)
     login/  auth.service.ts  auth.guard.ts  auth.interceptor.ts
@@ -226,9 +243,15 @@ Quando o back tiver esse endpoint, ele mora ali.
 | GET/PUT/DELETE | `/usuarios/{id}` | ADMIN |
 | PATCH | `/usuarios/{id}/bloquear` · `/desbloquear` | ADMIN |
 | POST/GET | `/produtores` · `/produtores/{id}` | SUPER_ADMIN |
+| PUT | `/produtores/{id}` | SUPER_ADMIN |
 | PATCH | `/produtores/{id}/inativar` · `/reativar` | SUPER_ADMIN |
 | GET | `/papeis` · `/papeis/permissoes` · `/papeis/{id}` | `papel:listar` |
 | POST/PUT/DELETE | `/papeis` · `/papeis/{id}` | `papel:inserir`/`editar`/`excluir` |
+| GET | `/raiox/produtos` · `/raiox/produtos/{id}` | `raioxproduto:listar` |
+| POST/PUT/DELETE | `/raiox/produtos` · `/raiox/produtos/{id}` | `raioxproduto:inserir`/`editar`/`excluir` |
+| POST | `/raiox/produtos/semear-padrao` | `raioxproduto:inserir` |
+| GET/POST/PUT/DELETE | `/raiox/checklist` · `/raiox/checklist/{id}` | `raioxchecklist:listar`/`inserir`/`editar`/`excluir` |
+| GET/POST/DELETE | `/raiox/simulacoes` · `/raiox/simulacoes/{id}` | `raioxsimulacao:listar`/`inserir`/`excluir` (sem PUT — imutável) |
 
 ### Permissões
 
@@ -258,6 +281,17 @@ só declarar o `permissaoGuard`, o item de menu e os `visivel` das ações. A
 matriz da tela de papéis se monta sozinha a partir de
 `GET /papeis/permissoes`.
 
+**Exceção: produtor não é permissão, é papel de sistema.** Produtor é
+`@RolesAllowed(SUPER_ADMIN)` puro, sem `CodigoPermissao` correspondente. A
+rota usa `superAdminGuard` (`auth/auth.guard.ts`), não `permissaoGuard`, e o
+item do menu usa o campo `apenasSuperAdmin` do `MENU` em vez de `permissao`.
+
+**Nome de `Recurso` não pode ter `_`.** O back monta o código separando
+`NOME_ACAO` no primeiro `_` (`Permissao.Codigos`), e `codigoDaPermissao()`
+aqui no front faz o mesmo split — por isso o catálogo do Raio-X é
+`raioxproduto:*` (não `raiox_produto:*`), o checklist é `raioxchecklist:*`, e
+as simulações são `raioxsimulacao:*`. Ver a seção "Raio-X" abaixo.
+
 ### O super admin e o `produtorId`
 
 Todo endpoint de `/usuarios` aceita `?produtorId=<uuid>`, e ele é
@@ -286,3 +320,39 @@ Access token dura 15 min, refresh 7 dias com rotação. Erros vêm sempre como
 paginação nem filtro. A pesquisa da listagem é local (client-side). Para
 chegar no grid paginado , o back precisa ganhar paginação e
 filtros primeiro.
+
+## Raio-X
+
+Primeiro módulo de cálculo do produto: "Mini Raio-X do Preço Mínimo", uma
+calculadora de preço mínimo de venda (produção vegetal ou animal), portada de
+um protótipo Next.js standalone (`app_miniraiox_pronto`) que rodava 100% no
+navegador com uma base de produtos fixa num JSON. Aqui a base virou dado
+editável **por produtor** (`raiox/produto/`, `raiox/checklist/`) e cada
+simulação roda no navegador mas é **salva no back** (`raiox/calculadora/`,
+`raiox/simulacoes/`) — ver `agro-back/CLAUDE.md` para o lado do servidor.
+
+- **A fórmula mora só no front**, em `raiox/calculadora/calculo.ts` — porta
+  quase literal de `lib/calculator.ts` do protótipo, função pura sem Angular.
+  O back grava `formulario`/`resultado` como o front mandou (jsonb), sem
+  recalcular — é ferramenta de apoio à decisão, não registro contábil. Ao
+  mexer na fórmula, rodar `calculo.spec.ts` primeiro (porta de
+  `tests/calculator.test.ts` original, mesmos casos).
+- **Sem autosave em `localStorage`**, ao contrário do protótipo: o rascunho
+  vive só no formulário da sessão; "Salvar simulação" é o único jeito de
+  persistir. Simplifica o componente e evita duas fontes de verdade.
+- **Navegação por sub-nav, não por 3 itens de menu.** Só "Raio-X" entra na
+  barra lateral (vai para `/raiox/calculadora`). Dentro da área, um sub-nav
+  local (`.raiox-subnav`, repetido em cada tela — são só 3, não vale subir
+  pra shared/) troca entre Calculadora/Produtos/Checklist.
+- **Produtos e checklist são permissões separadas** (`raioxproduto:*` e
+  `raioxchecklist:*`, desde 17/08/2026) — dá pra um papel editar só o
+  catálogo e outro só o checklist. O botão "Configurar base" na calculadora
+  não usa `*appSePode` (que só aceita um código): é
+  `podeConfigurarBase` em `calculadora.ts`, um `computed` que verifica os
+  dois e mostra o link se qualquer um for `true`.
+- **Simulação é imutável**: sem `PUT`, sem tela de editar — refazer é uma
+  simulação nova. `simulacao-show.ts` é só leitura, reconstrói o mesmo
+  painel de resultado da calculadora a partir do `resultado` salvo.
+- **Semáforo como banner**, com `.status-red`/`.status-yellow`/
+  `.status-green` do tema — é o padrão que "O tom importa tanto quanto as
+  cores" já pedia, primeiro caso real disso no código.

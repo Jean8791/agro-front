@@ -9,3 +9,10 @@ export interface Produtor {
 
 /** Espelha produtor/enums/TipoPessoa.java. */
 export type TipoPessoa = 'PF' | 'PJ';
+
+/** Espelha produtor/dto/ProdutorRequest.java — mesmo corpo em POST e PUT. */
+export interface ProdutorRequest {
+  nome: string;
+  documento: string;
+  tipoPessoa: TipoPessoa;
+}

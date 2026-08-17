@@ -1,0 +1,403 @@
+<div class="pagina">
+  <header class="pagina-cabecalho">
+    <div>
+      <h1>Raio-X do preço mínimo</h1>
+      <p>Preencha os campos abaixo. O resultado é automático e some para você decidir.</p>
+    </div>
+
+    <div class="pagina-acoes">
+      <button matButton routerLink="/raiox/simulacoes">
+        <mat-icon>history</mat-icon>
+        Histórico
+      </button>
+      @if (podeConfigurarBase()) {
+        <button matButton routerLink="/raiox/produtos">
+          <mat-icon>tune</mat-icon>
+          Configurar base
+        </button>
+      }
+      <button matButton (click)="novaSimulacao()">
+        <mat-icon>restart_alt</mat-icon>
+        Nova simulação
+      </button>
+    </div>
+  </header>
+
+  <nav class="raiox-subnav">
+    <span class="raiox-subnav-ativo">Calculadora</span>
+    <a routerLink="/raiox/produtos">Produtos</a>
+    <a routerLink="/raiox/checklist">Checklist de custos</a>
+  </nav>
+
+  <form [formGroup]="form" class="raiox-grade">
+    <div class="raiox-coluna">
+      <section class="cartao">
+        <div class="cartao-cabecalho">
+          <span class="section-kicker">Dados gerais</span>
+          <h2>Como você vende?</h2>
+        </div>
+        <div class="cartao-corpo">
+          <div class="linha">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-md">
+              <mat-label>Módulo</mat-label>
+              <mat-select formControlName="modulo">
+                <mat-option value="VEGETAL">Vegetal</mat-option>
+                <mat-option value="ANIMAL">Animal</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-lg">
+              <mat-label>Produto ou atividade</mat-label>
+              <mat-select
+                formControlName="produtoSelecionado"
+                (selectionChange)="aoSelecionarProduto($event.value)"
+              >
+                <mat-option [value]="PRODUTO_PERSONALIZADO">Personalizado…</mat-option>
+                @for (produto of produtosDoModulo(); track produto.id) {
+                  <mat-option [value]="produto.produto">{{ produto.produto }}</mat-option>
+                }
+              </mat-select>
+              <mat-hint>{{ produtosDoModulo().length }} produtos no catálogo deste módulo.</mat-hint>
+            </mat-form-field>
+
+            @if (produtoEhPersonalizado()) {
+              <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-lg">
+                <mat-label>Nome do produto</mat-label>
+                <input matInput formControlName="produtoPersonalizado" />
+              </mat-form-field>
+            }
+          </div>
+
+          <div class="linha">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-md">
+              <mat-label>Estado ou região</mat-label>
+              <input matInput formControlName="regiao" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-md">
+              <mat-label>Canal de venda</mat-label>
+              <input matInput formControlName="canalVenda" placeholder="Feira, atravessador, cooperativa…" />
+            </mat-form-field>
+          </div>
+
+          <div class="linha">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-sm">
+              <mat-label>Unidade comercial de venda</mat-label>
+              <input matInput formControlName="unidadeComercial" placeholder="caixa, saca, dúzia…" />
+              <mat-hint>Sempre editável — reflete como você realmente vende.</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-sm">
+              <mat-label>Quantidade por unidade comercial</mat-label>
+              <input matInput type="number" step="0.01" formControlName="quantidadePorUnidade" />
+              <mat-hint>Ex.: caixa 20 pés; saca 60 kg; dúzia 12 ovos.</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-sm">
+              <mat-label>Unidade técnica de produção</mat-label>
+              <input matInput formControlName="unidadeTecnica" placeholder="kg, cabeça, litro…" />
+            </mat-form-field>
+          </div>
+
+          <div class="linha">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-sm">
+              <mat-label>Preço líquido esperado</mat-label>
+              <input matInput type="number" step="0.01" formControlName="precoEsperado" />
+              <span matTextPrefix>R$&nbsp;</span>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-sm">
+              <mat-label>Margem desejada</mat-label>
+              <input matInput type="number" step="1" formControlName="margemDesejadaPercent" />
+              <span matTextSuffix>%</span>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-sm">
+              <mat-label>Reserva para imprevistos</mat-label>
+              <input matInput type="number" step="1" formControlName="reservaPercent" />
+              <span matTextSuffix>%</span>
+              <mat-hint>Até 50%.</mat-hint>
+            </mat-form-field>
+          </div>
+
+          <div class="linha">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-md">
+              <mat-label>Fonte da cotação</mat-label>
+              <input matInput formControlName="fonteCotacao" placeholder="Comprador, CEPEA, mercado local…" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-md">
+              <mat-label>Data da cotação</mat-label>
+              <input matInput type="date" formControlName="dataCotacao" />
+            </mat-form-field>
+          </div>
+        </div>
+      </section>
+
+      <section class="cartao">
+        <div class="cartao-cabecalho">
+          <span class="section-kicker">Produção</span>
+          <h2>Quanto você produz?</h2>
+        </div>
+        <div class="cartao-corpo">
+          @if (eVegetal()) {
+            <div class="linha">
+              <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-sm">
+                <mat-label>Produção bruta informada</mat-label>
+                <input matInput type="number" step="0.01" formControlName="producaoBrutaInformada" />
+                <mat-hint>Se preenchida, tem prioridade sobre área × produtividade.</mat-hint>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-sm">
+                <mat-label>Área</mat-label>
+                <input matInput type="number" step="0.01" formControlName="area" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-sm">
+                <mat-label>Produtividade</mat-label>
+                <input matInput type="number" step="0.01" formControlName="produtividade" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-sm">
+                <mat-label>Perda vegetal</mat-label>
+                <input matInput type="number" step="1" formControlName="perdaVegetalPercent" />
+                <span matTextSuffix>%</span>
+                <mat-hint>Até 80%. Vazio conta como 0%.</mat-hint>
+              </mat-form-field>
+            </div>
+          } @else {
+            <div class="linha">
+              <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-sm">
+                <mat-label>Tipo de produção</mat-label>
+                <mat-select formControlName="tipoProducaoAnimal">
+                  <mat-option value="CONTINUA">Contínua (produção diária no período)</mat-option>
+                  <mat-option value="LOTE">Lote (venda por peso ou por cabeça)</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-sm">
+                <mat-label>Animais, matrizes ou colmeias</mat-label>
+                <input matInput type="number" step="1" formControlName="quantidadeAnimais" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-sm">
+                <mat-label>Perda ou mortalidade</mat-label>
+                <input matInput type="number" step="1" formControlName="perdaMortalidadeAnimalPercent" />
+                <span matTextSuffix>%</span>
+                <mat-hint>Menor que 100%. Vazio conta como 0%.</mat-hint>
+              </mat-form-field>
+            </div>
+
+            @if (eContinua()) {
+              <div class="linha">
+                <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-sm">
+                  <mat-label>Produção média diária (por animal/colmeia)</mat-label>
+                  <input matInput type="number" step="0.01" formControlName="producaoDiariaMedia" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-sm">
+                  <mat-label>Dias do período</mat-label>
+                  <input matInput type="number" step="1" formControlName="diasPeriodo" />
+                </mat-form-field>
+              </div>
+            } @else {
+              <div class="linha">
+                <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-sm">
+                  <mat-label>Peso médio de venda</mat-label>
+                  <input matInput type="number" step="0.01" formControlName="pesoMedioVenda" />
+                  <mat-hint>Não exigido quando a venda é por cabeça/unidade.</mat-hint>
+                </mat-form-field>
+              </div>
+            }
+          }
+        </div>
+      </section>
+
+      <section class="cartao">
+        <div class="cartao-cabecalho">
+          <span class="section-kicker">Custos</span>
+          <h2>Quanto custa produzir e vender?</h2>
+        </div>
+        <div class="cartao-corpo" formGroupName="custos">
+          <p class="texto-apoio">Some tudo do ciclo ou período — o que for zero pode ficar em branco.</p>
+
+          <div class="linha custos-linha">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-custo">
+              <mat-label>Insumos</mat-label>
+              <input matInput type="number" step="0.01" formControlName="insumos" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-custo">
+              <mat-label>Aquisição</mat-label>
+              <input matInput type="number" step="0.01" formControlName="aquisicao" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-custo">
+              <mat-label>Mão de obra</mat-label>
+              <input matInput type="number" step="0.01" formControlName="maoDeObra" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-custo">
+              <mat-label>Energia</mat-label>
+              <input matInput type="number" step="0.01" formControlName="energia" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-custo">
+              <mat-label>Sanidade</mat-label>
+              <input matInput type="number" step="0.01" formControlName="sanidade" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-custo">
+              <mat-label>Serviços</mat-label>
+              <input matInput type="number" step="0.01" formControlName="servicos" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-custo">
+              <mat-label>Estrutura</mat-label>
+              <input matInput type="number" step="0.01" formControlName="estrutura" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-custo">
+              <mat-label>Embalagem</mat-label>
+              <input matInput type="number" step="0.01" formControlName="embalagem" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-custo">
+              <mat-label>Frete</mat-label>
+              <input matInput type="number" step="0.01" formControlName="frete" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-custo">
+              <mat-label>Outros</mat-label>
+              <input matInput type="number" step="0.01" formControlName="outros" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-custo">
+              <mat-label>Variável por unidade</mat-label>
+              <input matInput type="number" step="0.01" formControlName="variavelPorUnidade" />
+              <mat-hint>Por unidade comercial vendida.</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
+
+        @if (checklistDoModulo().length > 0) {
+          <div class="cartao-corpo checklist-apoio">
+            <span class="rotulo-micro">Checklist de custos — não entra na conta, é só apoio</span>
+            <div class="checklist-grade">
+              @for (item of checklistDoModulo(); track item.id) {
+                <label class="checklist-item">
+                  <mat-checkbox
+                    [checked]="custosMarcados().includes(item.rotulo)"
+                    (change)="alternarCustoMarcado(item.rotulo)"
+                  />
+                  <span>
+                    <strong>{{ item.rotulo }}</strong>
+                    @if (item.nota) {
+                      <small>{{ item.nota }}</small>
+                    }
+                  </span>
+                </label>
+              }
+            </div>
+          </div>
+        }
+      </section>
+    </div>
+
+    <aside class="raiox-coluna raiox-resultado">
+      <section class="cartao resultado-cartao">
+        <div class="cartao-cabecalho">
+          <span class="section-kicker">Resultado automático</span>
+          <h2>Seu raio-X</h2>
+        </div>
+
+        <div class="cartao-corpo">
+          <div
+            class="semaforo"
+            [class.status-red]="resultado().semaforo === 'RED'"
+            [class.status-yellow]="resultado().semaforo === 'YELLOW'"
+            [class.status-green]="resultado().semaforo === 'GREEN'"
+            [class.semaforo-vazio]="resultado().semaforo === 'FILL'"
+          >
+            <mat-icon>
+              {{
+                resultado().semaforo === 'GREEN'
+                  ? 'check_circle'
+                  : resultado().semaforo === 'YELLOW'
+                    ? 'warning'
+                    : resultado().semaforo === 'RED'
+                      ? 'error'
+                      : 'edit_note'
+              }}
+            </mat-icon>
+            <div>
+              <strong>{{ resultado().mensagem }}</strong>
+              <p>{{ resultado().acao }}</p>
+            </div>
+          </div>
+
+          @if (resultado().erros.length > 0) {
+            <ul class="lista-avisos lista-erros">
+              @for (erro of resultado().erros; track erro) {
+                <li>{{ erro }}</li>
+              }
+            </ul>
+          }
+          @if (resultado().avisos.length > 0) {
+            <ul class="lista-avisos">
+              @for (aviso of resultado().avisos; track aviso) {
+                <li>{{ aviso }}</li>
+              }
+            </ul>
+          }
+
+          <div class="indicadores-grade">
+            <div class="indicador">
+              <span class="indicador-icone"><mat-icon>shopping_basket</mat-icon></span>
+              <span class="rotulo-micro">Produção vendável</span>
+              <strong>{{ resultado().producaoComercial?.toFixed(2) ?? '—' }} {{ form.controls.unidadeComercial.value || 'unid.' }}</strong>
+            </div>
+            <div class="indicador">
+              <span class="indicador-icone"><mat-icon>receipt_long</mat-icon></span>
+              <span class="rotulo-micro">Custo total</span>
+              <strong>{{ resultado().custoTotal !== null ? 'R$ ' + resultado().custoTotal!.toFixed(2) : '—' }}</strong>
+            </div>
+            <div class="indicador">
+              <span class="indicador-icone"><mat-icon>payments</mat-icon></span>
+              <span class="rotulo-micro">Preço mínimo</span>
+              <strong>{{ resultado().precoMinimo !== null ? 'R$ ' + resultado().precoMinimo!.toFixed(2) : '—' }}</strong>
+            </div>
+            <div class="indicador">
+              <span class="indicador-icone"><mat-icon>trending_up</mat-icon></span>
+              <span class="rotulo-micro">Preço alvo com margem</span>
+              <strong>{{ resultado().precoAlvo !== null ? 'R$ ' + resultado().precoAlvo!.toFixed(2) : '—' }}</strong>
+            </div>
+            <div class="indicador">
+              <span class="indicador-icone"><mat-icon>account_balance_wallet</mat-icon></span>
+              <span class="rotulo-micro">Receita esperada</span>
+              <strong>{{ resultado().receitaEsperada !== null ? 'R$ ' + resultado().receitaEsperada!.toFixed(2) : '—' }}</strong>
+            </div>
+            <div class="indicador">
+              <span class="indicador-icone"><mat-icon>insights</mat-icon></span>
+              <span class="rotulo-micro">Resultado estimado</span>
+              <strong>{{ resultado().resultadoEstimado !== null ? 'R$ ' + resultado().resultadoEstimado!.toFixed(2) : '—' }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="cartao-rodape rodape-salvar">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-nome-simulacao">
+            <mat-label>Nome da simulação</mat-label>
+            <input
+              matInput
+              [ngModel]="nomeSimulacao()"
+              (ngModelChange)="nomeSimulacao.set($event)"
+              [ngModelOptions]="{ standalone: true }"
+              placeholder="Ex.: Alface — Fazenda Boa Vista, ago/2026"
+            />
+          </mat-form-field>
+          <button
+            *appSePode="'raioxsimulacao:inserir'"
+            matButton="filled"
+            type="button"
+            (click)="salvar()"
+            [disabled]="salvando() || resultado().erros.length > 0"
+          >
+            <mat-icon>save</mat-icon>
+            {{ salvando() ? 'Salvando…' : 'Salvar simulação' }}
+          </button>
+        </div>
+      </section>
+    </aside>
+  </form>
+</div>

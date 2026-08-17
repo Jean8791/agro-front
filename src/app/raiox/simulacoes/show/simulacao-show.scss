@@ -1,0 +1,95 @@
+.raiox-grade-show {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.resumo-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+}
+
+.resumo-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--linha);
+
+  dt {
+    color: var(--tinta-fraca);
+    font-size: 0.8125rem;
+  }
+
+  dd {
+    margin: 0;
+    color: var(--tinta);
+    font-weight: 700;
+    font-size: 0.8125rem;
+    text-align: right;
+  }
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+// -------------------------------------------------------- semáforo e indicadores
+// Mesmos nomes de calculadora.scss — repetido de propósito, tela irmã sem
+// código Angular em comum (não há template a compartilhar, só CSS).
+.semaforo {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px;
+  border-radius: var(--raio-lg);
+
+  mat-icon {
+    flex: 0 0 28px;
+    width: 28px;
+    height: 28px;
+    font-size: 28px;
+  }
+
+  strong {
+    display: block;
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 4px 0 0;
+    font-size: 0.8125rem;
+  }
+}
+
+.semaforo-vazio {
+  color: var(--tinta-fraca);
+  background: var(--pagina);
+}
+
+.indicadores-grade {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 18px;
+
+  .indicador {
+    padding: 14px;
+
+    strong {
+      display: block;
+      margin-top: 2px;
+      font-size: 1.0625rem;
+      font-weight: 800;
+    }
+  }
+}

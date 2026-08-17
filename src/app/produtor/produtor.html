@@ -1,0 +1,35 @@
+<div class="pagina">
+  <header class="pagina-cabecalho">
+    <div>
+      <h1>{{ entidade }}</h1>
+      <p>Os clientes que assinam o produto — cada um com suas propriedades e usuários.</p>
+    </div>
+
+    <div class="pagina-acoes">
+      <button matButton="filled" (click)="inserir()">
+        <mat-icon>add_business</mat-icon>
+        Novo produtor
+      </button>
+    </div>
+  </header>
+
+  <div class="busca cartao">
+    <mat-icon>search</mat-icon>
+    <input
+      type="search"
+      placeholder="Pesquisar por nome ou documento…"
+      aria-label="Pesquisar produtores"
+      [ngModel]="termo()"
+      (ngModelChange)="termo.set($event)"
+    />
+  </div>
+
+  <app-grid
+    [colunas]="colunas"
+    [acoes]="acoes"
+    [carregar]="carregar"
+    [filtro]="filtro()"
+    modo="cliente"
+    mensagemVazia="Nenhum produtor encontrado."
+  />
+</div>
