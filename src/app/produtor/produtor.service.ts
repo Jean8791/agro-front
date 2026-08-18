@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { PaginaGrid, ParametrosGrid } from '../shared/components/grid/grid.types';
+import { LIMITE_TUDO, paramsDeGrid } from '../shared/components/grid/parametros-grid.util';
 import { Produtor, ProdutorRequest } from './models/produtor';
 
 /**
@@ -17,32 +18,16 @@ export class ProdutorService {
   private readonly http = inject(HttpClient);
   private readonly url = `${environment.apiUrl}/produtores`;
 
+  /** Lista completa, para o seletor do cabeçalho — não é a listagem paginada. */
   query(): Observable<Produtor[]> {
-    return this.http.get<Produtor[]>(this.url);
+    return this.http
+      .get<PaginaGrid<Produtor>>(this.url, { params: new HttpParams().set('limit', LIMITE_TUDO) })
+      .pipe(map((pagina) => pagina.conteudo));
   }
 
-  /**
-   * Alimenta o grid. Como `GET /produtores` devolve a lista inteira, o filtro
-   * por nome e documento é feito aqui e o grid roda em modo `cliente` —
-   * mesma situação de `GET /usuarios`.
-   */
+  /** Alimenta o grid — `GET /produtores` paginado no back. */
   paginar(parametros: ParametrosGrid): Observable<PaginaGrid<Produtor>> {
-    const termo = String(parametros['termo'] ?? '')
-      .trim()
-      .toLowerCase();
-
-    return this.query().pipe(
-      map((produtores) => {
-        const filtrados = termo
-          ? produtores.filter(
-              (produtor) =>
-                produtor.nome.toLowerCase().includes(termo) || produtor.documento.includes(termo),
-            )
-          : produtores;
-
-        return { conteudo: filtrados, total: filtrados.length };
-      }),
-    );
+    return this.http.get<PaginaGrid<Produtor>>(this.url, { params: paramsDeGrid(parametros) });
   }
 
   get(id: string): Observable<Produtor> {

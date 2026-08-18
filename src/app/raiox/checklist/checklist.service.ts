@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { PaginaGrid, ParametrosGrid } from '../../shared/components/grid/grid.types';
+import { LIMITE_TUDO, paramsDeGrid } from '../../shared/components/grid/parametros-grid.util';
 import { TenantContext } from '../../shared/tenant';
 import { ChecklistItem, ChecklistItemRequest } from './models/checklist-item';
 
@@ -13,24 +14,18 @@ export class ChecklistService {
   private readonly tenant = inject(TenantContext);
   private readonly url = `${environment.apiUrl}/raiox/checklist`;
 
+  /** Lista completa, para o checklist de apoio da calculadora. */
   query(): Observable<ChecklistItem[]> {
-    return this.http.get<ChecklistItem[]>(this.url, { params: this.escopo() });
+    return this.http
+      .get<PaginaGrid<ChecklistItem>>(this.url, { params: this.escopo().set('limit', LIMITE_TUDO) })
+      .pipe(map((pagina) => pagina.conteudo));
   }
 
+  /** Alimenta o grid — `GET /raiox/checklist` paginado no back. */
   paginar(parametros: ParametrosGrid): Observable<PaginaGrid<ChecklistItem>> {
-    const termo = String(parametros['termo'] ?? '')
-      .trim()
-      .toLowerCase();
-
-    return this.query().pipe(
-      map((itens) => {
-        const filtrados = termo
-          ? itens.filter((item) => item.rotulo.toLowerCase().includes(termo))
-          : itens;
-
-        return { conteudo: filtrados, total: filtrados.length };
-      }),
-    );
+    return this.http.get<PaginaGrid<ChecklistItem>>(this.url, {
+      params: paramsDeGrid(parametros, this.escopo()),
+    });
   }
 
   get(id: string): Observable<ChecklistItem> {

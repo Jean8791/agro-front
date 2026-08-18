@@ -1,8 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { PaginaGrid, ParametrosGrid } from '../../shared/components/grid/grid.types';
+import { paramsDeGrid } from '../../shared/components/grid/parametros-grid.util';
 import { TenantContext } from '../../shared/tenant';
 import { Simulacao, SimulacaoRequest } from './models/simulacao';
 
@@ -16,29 +17,11 @@ export class SimulacaoService {
   private readonly tenant = inject(TenantContext);
   private readonly url = `${environment.apiUrl}/raiox/simulacoes`;
 
-  query(): Observable<Simulacao[]> {
-    return this.http.get<Simulacao[]>(this.url, { params: this.escopo() });
-  }
-
-  /** GET /raiox/simulacoes devolve a lista inteira: filtro e paginação em memória. */
+  /** Alimenta o grid — `GET /raiox/simulacoes` paginado no back. */
   paginar(parametros: ParametrosGrid): Observable<PaginaGrid<Simulacao>> {
-    const termo = String(parametros['termo'] ?? '')
-      .trim()
-      .toLowerCase();
-
-    return this.query().pipe(
-      map((simulacoes) => {
-        const filtradas = termo
-          ? simulacoes.filter(
-              (simulacao) =>
-                simulacao.nome.toLowerCase().includes(termo) ||
-                simulacao.produto.toLowerCase().includes(termo),
-            )
-          : simulacoes;
-
-        return { conteudo: filtradas, total: filtradas.length };
-      }),
-    );
+    return this.http.get<PaginaGrid<Simulacao>>(this.url, {
+      params: paramsDeGrid(parametros, this.escopo()),
+    });
   }
 
   get(id: string): Observable<Simulacao> {
