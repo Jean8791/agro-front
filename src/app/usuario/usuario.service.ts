@@ -1,8 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { PaginaGrid, ParametrosGrid } from '../shared/components/grid/grid.types';
+import { paramsDeGrid } from '../shared/components/grid/parametros-grid.util';
 import { TenantContext } from '../shared/tenant';
 import { Usuario, UsuarioRequest, UsuarioUpdateRequest } from './models/usuario';
 
@@ -20,36 +21,11 @@ export class UsuarioService {
   private readonly tenant = inject(TenantContext);
   private readonly url = `${environment.apiUrl}/usuarios`;
 
-  query(): Observable<Usuario[]> {
-    return this.http.get<Usuario[]>(this.url, { params: this.escopo() });
-  }
-
-  /**
-   * Alimenta o grid.
-   *
-   * <p>Enquanto `GET /usuarios` devolver a lista inteira, o filtro por nome e
-   * e-mail é feito aqui e o grid roda em modo `cliente`. Quando o back ganhar
-   * paginação, esta função passa a mandar `offset`/`limit`/`sort` como params
-   * e o grid volta para o modo `servidor` — o componente da tela não muda.
-   */
+  /** Alimenta o grid — `GET /usuarios` paginado no back. */
   paginar(parametros: ParametrosGrid): Observable<PaginaGrid<Usuario>> {
-    const termo = String(parametros['termo'] ?? '')
-      .trim()
-      .toLowerCase();
-
-    return this.query().pipe(
-      map((usuarios) => {
-        const filtrados = termo
-          ? usuarios.filter(
-              (usuario) =>
-                usuario.nome.toLowerCase().includes(termo) ||
-                usuario.email.toLowerCase().includes(termo),
-            )
-          : usuarios;
-
-        return { conteudo: filtrados, total: filtrados.length };
-      }),
-    );
+    return this.http.get<PaginaGrid<Usuario>>(this.url, {
+      params: paramsDeGrid(parametros, this.escopo()),
+    });
   }
 
   get(id: string): Observable<Usuario> {
