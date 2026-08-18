@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { PaginaGrid, ParametrosGrid } from '../shared/components/grid/grid.types';
+import { LIMITE_TUDO, paramsDeGrid } from '../shared/components/grid/parametros-grid.util';
 import { TenantContext } from '../shared/tenant';
 import { Papel, PapelRequest } from './models/papel';
 import { RecursoComAcoes } from './models/permissao';
@@ -19,8 +20,11 @@ export class PapelService {
   private readonly tenant = inject(TenantContext);
   private readonly url = `${environment.apiUrl}/papeis`;
 
+  /** Lista completa, para o select de papel no formulário de usuário. */
   query(): Observable<Papel[]> {
-    return this.http.get<Papel[]>(this.url, { params: this.escopo() });
+    return this.http
+      .get<PaginaGrid<Papel>>(this.url, { params: this.escopo().set('limit', LIMITE_TUDO) })
+      .pipe(map((pagina) => pagina.conteudo));
   }
 
   /**
@@ -31,29 +35,11 @@ export class PapelService {
     return this.http.get<RecursoComAcoes[]>(`${this.url}/permissoes`);
   }
 
-  /**
-   * Alimenta o grid. Como `GET /papeis` devolve a lista inteira, o filtro por
-   * nome é feito aqui e o grid roda em modo `cliente` — mesma situação de
-   * `GET /usuarios`.
-   */
+  /** Alimenta o grid — `GET /papeis` paginado no back. */
   paginar(parametros: ParametrosGrid): Observable<PaginaGrid<Papel>> {
-    const termo = String(parametros['termo'] ?? '')
-      .trim()
-      .toLowerCase();
-
-    return this.query().pipe(
-      map((papeis) => {
-        const filtrados = termo
-          ? papeis.filter(
-              (papel) =>
-                papel.nome.toLowerCase().includes(termo) ||
-                (papel.descricao ?? '').toLowerCase().includes(termo),
-            )
-          : papeis;
-
-        return { conteudo: filtrados, total: filtrados.length };
-      }),
-    );
+    return this.http.get<PaginaGrid<Papel>>(this.url, {
+      params: paramsDeGrid(parametros, this.escopo()),
+    });
   }
 
   get(id: string): Observable<Papel> {

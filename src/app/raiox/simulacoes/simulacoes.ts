@@ -8,6 +8,7 @@ import { Grid } from '../../shared/components/grid/grid';
 import { AcaoGrid, ColunaGrid, TomPill } from '../../shared/components/grid/grid.types';
 import { mensagemDoErro } from '../../shared/erro';
 import { Modal } from '../../shared/modal.service';
+import { TenantContext } from '../../shared/tenant';
 import { Toast } from '../../shared/toast.service';
 import { Simulacao } from '../calculadora/models/simulacao';
 import { SimulacaoService } from '../calculadora/simulacao.service';
@@ -38,6 +39,7 @@ export class Simulacoes {
   private readonly toast = inject(Toast);
   private readonly modal = inject(Modal);
   private readonly permissoes = inject(Permissoes);
+  private readonly tenant = inject(TenantContext);
 
   private readonly grid = viewChild.required(Grid<Simulacao>);
 
@@ -46,7 +48,10 @@ export class Simulacoes {
 
   protected readonly entidade = 'Histórico de simulações';
 
-  protected readonly filtro = computed(() => ({ termo: this.termo() }));
+  protected readonly filtro = computed(() => ({
+    termo: this.termo(),
+    produtorId: this.tenant.produtor()?.id ?? null,
+  }));
 
   protected readonly colunas: ColunaGrid<Simulacao>[] = [
     {
