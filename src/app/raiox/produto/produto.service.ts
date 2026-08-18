@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { PaginaGrid, ParametrosGrid } from '../../shared/components/grid/grid.types';
+import { LIMITE_TUDO, paramsDeGrid } from '../../shared/components/grid/parametros-grid.util';
 import { TenantContext } from '../../shared/tenant';
 import { ProdutoBase, ProdutoBaseRequest } from './models/produto';
 
@@ -17,29 +18,18 @@ export class ProdutoService {
   private readonly tenant = inject(TenantContext);
   private readonly url = `${environment.apiUrl}/raiox/produtos`;
 
+  /** Lista completa, para o select de produto da calculadora. */
   query(): Observable<ProdutoBase[]> {
-    return this.http.get<ProdutoBase[]>(this.url, { params: this.escopo() });
+    return this.http
+      .get<PaginaGrid<ProdutoBase>>(this.url, { params: this.escopo().set('limit', LIMITE_TUDO) })
+      .pipe(map((pagina) => pagina.conteudo));
   }
 
-  /** GET /raiox/produtos devolve a lista inteira: filtro e paginação em memória. */
+  /** Alimenta o grid — `GET /raiox/produtos` paginado no back. */
   paginar(parametros: ParametrosGrid): Observable<PaginaGrid<ProdutoBase>> {
-    const termo = String(parametros['termo'] ?? '')
-      .trim()
-      .toLowerCase();
-
-    return this.query().pipe(
-      map((produtos) => {
-        const filtrados = termo
-          ? produtos.filter(
-              (produto) =>
-                produto.produto.toLowerCase().includes(termo) ||
-                produto.categoria.toLowerCase().includes(termo),
-            )
-          : produtos;
-
-        return { conteudo: filtrados, total: filtrados.length };
-      }),
-    );
+    return this.http.get<PaginaGrid<ProdutoBase>>(this.url, {
+      params: paramsDeGrid(parametros, this.escopo()),
+    });
   }
 
   get(id: string): Observable<ProdutoBase> {
