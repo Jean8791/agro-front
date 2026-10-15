@@ -5,10 +5,6 @@ agronegócio. Consome o `agro-back` (Quarkus, `http://localhost:8090` em dev).
 
 ## Convenção de estrutura de pastas
 
-A estrutura é um decalque do padrão que o dono do projeto já usa em produção
-no `projeto de referência` .
-A ideia é que quem conhece aquele projeto se ache aqui sem reaprender nada.
-
 **Package by feature**: cada domínio é uma pasta autocontida direto em
 `src/app/`. Nada de `pages/`, `services/` ou `models/` globais na raiz.
 
@@ -65,39 +61,14 @@ src/app/
     layout/                        casca: barra lateral + cabeçalho + outlet
     tenant.ts                      produtor escolhido pelo super admin
     se-pode.ts                     diretiva *appSePode="'usuario:inserir'"
-    toast.service.ts               = Toast 
-    modal.service.ts               = Modal 
+    toast.service.ts               mensagem curta no rodapé
+    modal.service.ts               dialogs de confirmação
     confirmacao/                   corpo do dialog de confirmação
-    erro.ts                        = onError(response)
-    components/breadcrumb/         = <app-breadcrumb steps="...">
-    components/loader/             = <app-loader>
+    erro.ts                        tratamento padrão de erro HTTP
+    components/breadcrumb/         breadcrumb da tela
+    components/loader/             indicador de carregamento
     models/                        error-response.ts, step.ts
 ```
-
-### Equivalências com o projeto de referência (AngularJS 1.6)
-
-| projeto de referência | agro-front |
-| --- | --- |
-| `<tela>.component.js` na raiz | `<dominio>.ts` na raiz — é a listagem |
-| `<tela>.service.js` (factory `resource`) | `<dominio>.service.ts` (classe injetável) |
-| `show/` | `show/` |
-| `pesquisa-avancada/` | `pesquisa-avancada/` |
-| `$ctrl.inserir = inserir;` no topo | métodos `protected` da classe (o template já enxerga) |
-| `function onInit()` | `ngOnInit()` |
-| `$ctrl.salvando = false` | `readonly salvando = signal(false)` |
-| `$ctrl.showLoader` | `readonly showLoader = signal(false)` |
-| `$ctrl.steps = [{url, label}]` | `readonly steps: Step[]` + `<app-breadcrumb [steps]="steps" />` |
-| `Toast.success/warning/danger` | idem, injetando `Toast` |
-| `Modal.confirmation(msg, cb)` | `modal.confirmation(msg).subscribe(() => …)` |
-| `onError(response)` / `after()` | métodos privados com os mesmos nomes, no fim da classe |
-| `resource.situacoes = [{label, value}]` | `export const SITUACOES = [{label, value}]` no service |
-| `panel panel-default` | classes `.cartao` / `.cartao-cabecalho` / `.cartao-corpo` (globais) |
-| `Grid.createGrid(callback, columnDefs, options)` | `<app-grid [colunas] [acoes] [carregar] [filtro] />` |
-| `gridOptions.refresh()` | `grid().recarregar()` (via `viewChild`) |
-| `gridOptions.setFilter(criterios)` | input `[filtro]` — mudou, volta para a primeira página |
-| botoeira + `gridOptions.selectedRow` | input `[acoes]`: botão de ícone na própria linha |
-| `ParametrosGrid {offset, limit, sort}` | `ParametrosGrid` — mesmos nomes |
-| `clientSidePaging: true` | `modo="cliente"` |
 
 ### O grid (`shared/components/grid`)
 
@@ -151,7 +122,7 @@ isso — importá-lo na config dobrou o bundle inicial (297 kB → 612 kB).
 1. **Ordem dentro do componente**: injeções, depois sinais de estado, depois
    constantes da tela (`entidade`, `steps`, `colunas`, `acoes`), depois
    `ngOnInit()`, depois as ações na ordem em que aparecem na tela, e por último
-   `onError()` e `after()`. É a mesma leitura de cima para baixo .
+   `onError()` e `after()`.
 2. **Nenhuma URL no componente**: base vem de `environment.apiUrl` e a chamada
    HTTP mora sempre no service do domínio. Componente não injeta `HttpClient`.
 3. Os `models/` espelham os DTOs do back, com um comentário citando o record
@@ -161,8 +132,7 @@ isso — importá-lo na config dobrou o bundle inicial (297 kB → 612 kB).
 5. `auth/` depende de `usuario/`, nunca o contrário — igual ao back.
 6. Rotas do domínio em `<dominio>.routes.ts`, carregadas com `loadComponent`
    no `app.routes.ts`. O padrão de rota é `/<dominio>` para a listagem e
-   `/<dominio>/:uri` para o formulário, onde `uri` é `novo` ou o id — mesmo
-   esquema .
+   `/<dominio>/:uri` para o formulário, onde `uri` é `novo` ou o id.
 7. Sem sufixo `.component` nos arquivos: o Angular 21 gera `app.ts`/`app.html`
    e seguimos isso (`usuario.ts`, classe `Usuario`).
 8. `router.navigate()` recebe **um segmento por item** do array:
@@ -318,7 +288,7 @@ Access token dura 15 min, refresh 7 dias com rotação. Erros vêm sempre como
 
 **Limitação conhecida**: `GET /usuarios` devolve a lista inteira, sem
 paginação nem filtro. A pesquisa da listagem é local (client-side). Para
-chegar no grid paginado , o back precisa ganhar paginação e
+usar o grid paginado no servidor, o back precisa ganhar paginação e
 filtros primeiro.
 
 ## Raio-X
