@@ -2,7 +2,7 @@ import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Step } from '../../models/step';
 
-/** Equivalente ao `<app-breadcrumb steps="$ctrl.steps">`. */
+/** Breadcrumb da tela, montado a partir de uma lista de {@link Step}. */
 @Component({
   selector: 'app-breadcrumb',
   imports: [RouterLink],

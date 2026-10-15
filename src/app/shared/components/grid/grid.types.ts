@@ -4,8 +4,7 @@ import { Observable } from 'rxjs';
 export type TomPill = 'verde' | 'vermelho' | 'ambar' | 'azul' | 'cinza';
 
 /**
- * Definição de uma coluna — equivalente ao `columnDefs` do Grid do
- * projeto de referência (`{field, title, width, cellClass, template}`).
+ * Definição de uma coluna do grid.
  */
 export interface ColunaGrid<T> {
   /** Nome do campo no objeto. Também é a chave da coluna. */
@@ -16,7 +15,7 @@ export interface ColunaGrid<T> {
   largura?: string;
   /** Classe aplicada às células, para alinhar à direita etc. */
   classe?: string;
-  /** Se a coluna pode ser ordenada. Padrão: false, como . */
+  /** Se a coluna pode ser ordenada. Padrão: false. */
   ordenavel?: boolean;
   /**
    * Formata o valor exibido — faz o papel do `template`/`cellFilter`.
@@ -66,8 +65,8 @@ export interface AcaoGrid<T> {
 }
 
 /**
- * O que o grid manda para quem busca os dados. Mesmos nomes do
- * `ParametrosGrid` , mais os critérios do filtro.
+ * O que o grid manda para quem busca os dados: paginação, ordenação e os
+ * critérios do filtro.
  */
 export interface ParametrosGrid {
   offset: number;
@@ -90,8 +89,7 @@ export type CarregarGrid<T> = (parametros: ParametrosGrid) => Observable<PaginaG
  *
  * - `servidor`: cada mudança de página refaz a busca com offset/limit novos.
  *   É o padrão e o que se espera de um endpoint paginado.
- * - `cliente`: busca tudo de uma vez e pagina em memória. Equivale ao
- *   `clientSidePaging`  — serve para endpoint que ainda devolve
- *   a lista inteira, como o `GET /usuarios` de hoje.
+ * - `cliente`: busca tudo de uma vez e pagina em memória. Serve para
+ *   endpoint que ainda devolve a lista inteira, como o `GET /usuarios` de hoje.
  */
 export type ModoPaginacao = 'servidor' | 'cliente';
