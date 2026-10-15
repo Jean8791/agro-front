@@ -2,8 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 /**
- * Equivalente ao `Toast` : mensagem curta no rodapé.
- * Mesmos nomes de método para não ter que reaprender nada.
+ * Mensagem curta no rodapé, com variações de sucesso, aviso e erro.
  */
 @Injectable({ providedIn: 'root' })
 export class Toast {

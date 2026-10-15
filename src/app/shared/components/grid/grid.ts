@@ -25,7 +25,7 @@ import {
 } from './grid.types';
 
 /**
- * Grid padrão das telas de listagem — o que o `Grid` faz .
+ * Grid padrão das telas de listagem.
  *
  * <p>Recebe as colunas, uma função que busca os dados e as ações que agem sobre
  * um registro, e cuida de paginação, quantidade por página, ordenação e estado
@@ -148,7 +148,7 @@ export class Grid<T extends { id: string | number }> {
     });
   }
 
-  /** Recarrega mantendo página e filtro — o `refresh()` do Grid. */
+  /** Recarrega mantendo página e filtro. */
   recarregar(): void {
     this.buscar();
   }
