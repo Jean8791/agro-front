@@ -3,7 +3,7 @@ import { permissaoGuard } from '../auth/auth.guard';
 
 /**
  * Rotas do domínio. A listagem fica na raiz e o formulário em `/:uri`, onde
- * `uri` é 'novo' ou o id — mesmo esquema de rota .
+ * `uri` é 'novo' ou o id.
  */
 export const papelRoutes: Routes = [
   {

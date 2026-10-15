@@ -7,9 +7,6 @@ import { ErrorResponse } from './models/error-response';
  * <p>O back já devolve `ErrorResponse.message` pronto para leitura — inclusive
  * no 429 do rate limit, que informa quantos minutos faltam. Só os casos em que
  * não há corpo é que precisam de texto nosso.
- *
- * <p>Faz o papel do `onError(response)` que  olhava
- * `response.data.validacoes`.
  */
 export function mensagemDoErro(erro: unknown): string {
   if (!(erro instanceof HttpErrorResponse)) {

@@ -8,9 +8,8 @@ import { TenantContext } from '../shared/tenant';
 import { Usuario, UsuarioRequest, UsuarioUpdateRequest } from './models/usuario';
 
 /**
- * Resource de usuário — um método por endpoint do UsuarioResource do back,
- * no mesmo espírito do `usuario.service.js` . Nenhum componente
- * monta URL: tudo passa por aqui.
+ * Resource de usuário — um método por endpoint do UsuarioResource do back.
+ * Nenhum componente monta URL: tudo passa por aqui.
  *
  * <p>Todos os endpoints exigem papel ADMIN no produtor (ou super admin) e
  * respondem sempre no escopo do produtor da sessão.
