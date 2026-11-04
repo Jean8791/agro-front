@@ -1,5 +1,5 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
+import { catchError, debounceTime, distinctUntilChanged, map, of, startWith, switchMap, tap } from 'rxjs';
 import { Permissoes } from '../../auth/permissoes';
 import { mensagemDoErro } from '../../shared/erro';
 import { SePode } from '../../shared/se-pode';
@@ -16,9 +17,27 @@ import { ChecklistService } from '../checklist/checklist.service';
 import { ChecklistItem } from '../checklist/models/checklist-item';
 import { ModuloProducao, ProdutoBase } from '../produto/models/produto';
 import { ProdutoService } from '../produto/produto.service';
-import { calcularPrecoMinimo } from './calculo';
-import { FormularioCalculo, PRODUTO_PERSONALIZADO } from './models/simulacao';
+import { FormularioCalculo, PRODUTO_PERSONALIZADO, ResultadoCalculo } from './models/simulacao';
 import { SimulacaoService } from './simulacao.service';
+
+const RESULTADO_VAZIO: ResultadoCalculo = {
+  producaoTecnicaBruta: null,
+  producaoTecnicaVendavel: null,
+  producaoComercial: null,
+  custoBase: null,
+  valorReserva: null,
+  custoTotal: null,
+  precoMinimo: null,
+  precoAlvo: null,
+  receitaEsperada: null,
+  resultadoEstimado: null,
+  margemSegurancaReal: null,
+  semaforo: 'FILL',
+  mensagem: 'Complete os dados obrigatórios antes de decidir.',
+  acao: 'Revise unidade, produção, custos e preço.',
+  erros: [],
+  avisos: [],
+};
 
 @Component({
   selector: 'app-raiox-calculadora',
@@ -43,10 +62,13 @@ export class Calculadora implements OnInit {
   private readonly checklistService = inject(ChecklistService);
   private readonly simulacaoService = inject(SimulacaoService);
   private readonly toast = inject(Toast);
+  private readonly destroyRef = inject(DestroyRef);
   protected readonly permissoes = inject(Permissoes);
 
   protected readonly carregandoBase = signal(false);
   protected readonly salvando = signal(false);
+  protected readonly calculando = signal(true);
+  protected readonly resultado = signal<ResultadoCalculo>(RESULTADO_VAZIO);
   protected readonly nomeSimulacao = signal('');
 
   protected readonly produtos = signal<ProdutoBase[]>([]);
@@ -136,12 +158,31 @@ export class Calculadora implements OnInit {
     return this.checklist().filter((item) => item.modulo === modulo || item.modulo === 'AMBOS');
   });
 
-  protected readonly resultado = computed(() => {
-    this.valorForm();
-    return calcularPrecoMinimo(this.montarFormulario(this.form.getRawValue()));
-  });
-
   ngOnInit(): void {
+    this.form.valueChanges
+      .pipe(
+        startWith(null),
+        map(() => this.montarFormulario(this.form.getRawValue())),
+        debounceTime(300),
+        distinctUntilChanged((anterior, atual) => JSON.stringify(anterior) === JSON.stringify(atual)),
+        tap(() => this.calculando.set(true)),
+        switchMap((formulario) =>
+          this.simulacaoService.calcular(formulario).pipe(
+            catchError((erro) => {
+              this.toast.danger(mensagemDoErro(erro));
+              return of(null);
+            }),
+          ),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((resultado) => {
+        if (resultado) {
+          this.resultado.set(resultado);
+        }
+        this.calculando.set(false);
+      });
+
     this.carregandoBase.set(true);
 
     this.produtoService.query().subscribe({
@@ -201,8 +242,7 @@ export class Calculadora implements OnInit {
   }
 
   protected salvar(): void {
-    const resultado = this.resultado();
-    if (resultado.erros.length > 0 || this.salvando()) {
+    if (this.resultado().erros.length > 0 || this.salvando() || this.calculando()) {
       return;
     }
 
@@ -212,24 +252,10 @@ export class Calculadora implements OnInit {
       return;
     }
 
-    const formulario = this.montarFormulario(this.form.getRawValue());
-    const produto =
-      formulario.produtoSelecionado === PRODUTO_PERSONALIZADO
-        ? formulario.produtoPersonalizado.trim()
-        : formulario.produtoSelecionado.trim();
-
     this.salvando.set(true);
 
     this.simulacaoService
-      .salvar({
-        nome,
-        modulo: formulario.modulo,
-        produto,
-        semaforo: resultado.semaforo,
-        precoMinimo: resultado.precoMinimo,
-        formulario,
-        resultado,
-      })
+      .salvar({ nome, formulario: this.montarFormulario(this.form.getRawValue()) })
       .subscribe({
         next: () => {
           this.toast.success('Simulação salva com sucesso');

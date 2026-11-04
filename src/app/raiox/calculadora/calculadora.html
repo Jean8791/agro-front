@@ -297,11 +297,11 @@
     <aside class="raiox-coluna raiox-resultado">
       <section class="cartao resultado-cartao">
         <div class="cartao-cabecalho">
-          <span class="section-kicker">Resultado automático</span>
+          <span class="section-kicker">{{ calculando() ? 'Calculando…' : 'Resultado automático' }}</span>
           <h2>Seu raio-X</h2>
         </div>
 
-        <div class="cartao-corpo">
+        <div class="cartao-corpo" [class.recalculando]="calculando()" [attr.aria-busy]="calculando()">
           <div
             class="semaforo"
             [class.status-red]="resultado().semaforo === 'RED'"
@@ -391,7 +391,7 @@
             matButton="filled"
             type="button"
             (click)="salvar()"
-            [disabled]="salvando() || resultado().erros.length > 0"
+            [disabled]="salvando() || calculando() || resultado().erros.length > 0"
           >
             <mat-icon>save</mat-icon>
             {{ salvando() ? 'Salvando…' : 'Salvar simulação' }}
