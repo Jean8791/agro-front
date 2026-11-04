@@ -5,7 +5,7 @@ import { environment } from '../../../environments/environment';
 import { PaginaGrid, ParametrosGrid } from '../../shared/components/grid/grid.types';
 import { paramsDeGrid } from '../../shared/components/grid/parametros-grid.util';
 import { TenantContext } from '../../shared/tenant';
-import { Simulacao, SimulacaoRequest } from './models/simulacao';
+import { FormularioCalculo, ResultadoCalculo, Simulacao, SimulacaoRequest } from './models/simulacao';
 
 /**
  * Resource de simulações do Raio-X. Sem `editar`: simulação é imutável — ver
@@ -26,6 +26,11 @@ export class SimulacaoService {
 
   get(id: string): Observable<Simulacao> {
     return this.http.get<Simulacao>(`${this.url}/${id}`, { params: this.escopo() });
+  }
+
+  /** `POST /raiox/simulacoes/calcular` — calcula sem gravar. */
+  calcular(formulario: FormularioCalculo): Observable<ResultadoCalculo> {
+    return this.http.post<ResultadoCalculo>(`${this.url}/calcular`, formulario);
   }
 
   salvar(simulacao: SimulacaoRequest): Observable<Simulacao> {

@@ -34,7 +34,7 @@ src/app/
 ├── usuario/
 ├── papel/       listagem e formulário com matriz de permissões
 ├── raiox/
-│   ├── calculadora/   motor de cálculo (calculo.ts) e tela
+│   ├── calculadora/   formulário e painel de resultado (o cálculo roda no back)
 │   ├── simulacoes/
 │   ├── produto/
 │   └── checklist/

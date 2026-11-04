@@ -5,28 +5,25 @@ export type { ModuloProducao, TipoProducaoAnimal };
 /** Campo numérico de formulário: vazio antes de preencher, nunca `NaN`. */
 export type CampoNumerico = number | null;
 
-export const CHAVES_CUSTO_FIXO = [
-  'insumos',
-  'aquisicao',
-  'maoDeObra',
-  'energia',
-  'sanidade',
-  'servicos',
-  'estrutura',
-  'embalagem',
-  'frete',
-  'outros',
-] as const;
-
-export type ChaveCusto = (typeof CHAVES_CUSTO_FIXO)[number] | 'variavelPorUnidade';
-
-export type Custos = Record<ChaveCusto, CampoNumerico>;
+/** Espelha raiox/simulacao/calculo/Custos.java. */
+export interface Custos {
+  insumos: CampoNumerico;
+  aquisicao: CampoNumerico;
+  maoDeObra: CampoNumerico;
+  energia: CampoNumerico;
+  sanidade: CampoNumerico;
+  servicos: CampoNumerico;
+  estrutura: CampoNumerico;
+  embalagem: CampoNumerico;
+  frete: CampoNumerico;
+  outros: CampoNumerico;
+  variavelPorUnidade: CampoNumerico;
+}
 
 /**
- * O que a tela da calculadora preenche. Não é DTO de back — o back grava
- * isto como está, num jsonb, sem reconstruir os tipos (ver
- * SimulacaoRequest.java). Porta de `CalculatorForm` do protótipo original,
- * com os nomes em português e `""` trocado por `null` nos campos numéricos.
+ * O que a tela da calculadora preenche. Espelha
+ * raiox/simulacao/calculo/FormularioCalculo.java: o back calcula a partir
+ * disto e grava como veio, num jsonb.
  */
 export interface FormularioCalculo {
   modulo: ModuloProducao;
@@ -62,7 +59,7 @@ export const PRODUTO_PERSONALIZADO = '__personalizado__';
 /** Espelha raiox/simulacao/enums/Semaforo.java. */
 export type Semaforo = 'FILL' | 'RED' | 'YELLOW' | 'GREEN';
 
-/** Porta de `CalculationResult` do protótipo original, nomes em português. */
+/** Espelha raiox/simulacao/calculo/ResultadoCalculo.java — calculado só no back. */
 export interface ResultadoCalculo {
   producaoTecnicaBruta: number | null;
   producaoTecnicaVendavel: number | null;
@@ -82,15 +79,13 @@ export interface ResultadoCalculo {
   avisos: string[];
 }
 
-/** Espelha raiox/simulacao/dto/SimulacaoRequest.java. */
+/**
+ * Espelha raiox/simulacao/dto/SimulacaoRequest.java. Só nome e formulário:
+ * o back recalcula o resultado ao salvar e ignora qualquer resultado mandado.
+ */
 export interface SimulacaoRequest {
   nome: string;
-  modulo: ModuloProducao;
-  produto: string;
-  semaforo: Semaforo;
-  precoMinimo: number | null;
   formulario: FormularioCalculo;
-  resultado: ResultadoCalculo;
   produtorId?: string;
 }
 

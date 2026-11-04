@@ -202,3 +202,8 @@
 .campo-nome-simulacao {
   width: 100%;
 }
+
+.recalculando {
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+}
