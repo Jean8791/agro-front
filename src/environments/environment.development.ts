@@ -3,4 +3,5 @@ export const environment = {
   // porta oficial do agro-back (application.yml). A origem localhost:4200 já
   // está liberada no CORS do back.
   apiUrl: 'http://localhost:8090',
+  demo: { email: 'demo@agro.com', senha: 'demo1234' },
 };

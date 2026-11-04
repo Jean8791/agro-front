@@ -64,6 +64,8 @@ npm start
 
 Acesse `http://localhost:4200`. Em desenvolvimento a API usada é a de `src/environments/environment.development.ts` (`http://localhost:8090`).
 
+A tela de login tem o botão **Entrar como visitante**, que usa a conta de demonstração (`demo@agro.com` / `demo1234`) criada pelo `scripts/criar-demo.sh` do agro-back.
+
 ### Testes
 
 ```bash

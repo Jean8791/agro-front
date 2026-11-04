@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 import { mensagemDoErro } from '../../shared/erro';
 import { AuthService } from '../auth.service';
 
@@ -30,6 +31,7 @@ export class Login {
   protected readonly enviando = signal(false);
   protected readonly erro = signal<string | null>(null);
   protected readonly senhaVisivel = signal(false);
+  protected readonly demo = environment.demo;
 
   protected readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
@@ -55,6 +57,11 @@ export class Login {
         this.erro.set(mensagemDoErro(erro));
       },
     });
+  }
+
+  protected entrarComoVisitante(): void {
+    this.form.setValue({ email: this.demo.email, senha: this.demo.senha });
+    this.entrar();
   }
 
   protected alternarSenha(): void {
