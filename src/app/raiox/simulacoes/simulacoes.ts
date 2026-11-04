@@ -7,6 +7,7 @@ import { Permissoes } from '../../auth/permissoes';
 import { Grid } from '../../shared/components/grid/grid';
 import { AcaoGrid, ColunaGrid, TomPill } from '../../shared/components/grid/grid.types';
 import { mensagemDoErro } from '../../shared/erro';
+import { formatarReais } from '../../shared/formato';
 import { Modal } from '../../shared/modal.service';
 import { TenantContext } from '../../shared/tenant';
 import { Toast } from '../../shared/toast.service';
@@ -72,7 +73,7 @@ export class Simulacoes {
       field: 'precoMinimo',
       titulo: 'Preço mínimo',
       largura: '10rem',
-      valor: (linha) => (linha.precoMinimo !== null ? `R$ ${linha.precoMinimo.toFixed(2)}` : '—'),
+      valor: (linha) => formatarReais(linha.precoMinimo),
     },
     {
       field: 'criadoEm',

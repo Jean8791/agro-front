@@ -74,27 +74,27 @@
           <div class="indicadores-grade">
             <div class="indicador">
               <span class="rotulo-micro">Produção vendável</span>
-              <strong>{{ simulacao.resultado.producaoComercial?.toFixed(2) ?? '—' }}</strong>
+              <strong>{{ simulacao.resultado.producaoComercial | decimal }}</strong>
             </div>
             <div class="indicador">
               <span class="rotulo-micro">Custo total</span>
-              <strong>{{ simulacao.resultado.custoTotal !== null ? 'R$ ' + simulacao.resultado.custoTotal.toFixed(2) : '—' }}</strong>
+              <strong>{{ simulacao.resultado.custoTotal | reais }}</strong>
             </div>
             <div class="indicador">
               <span class="rotulo-micro">Preço mínimo</span>
-              <strong>{{ simulacao.precoMinimo !== null ? 'R$ ' + simulacao.precoMinimo.toFixed(2) : '—' }}</strong>
+              <strong>{{ simulacao.precoMinimo | reais }}</strong>
             </div>
             <div class="indicador">
               <span class="rotulo-micro">Preço alvo com margem</span>
-              <strong>{{ simulacao.resultado.precoAlvo !== null ? 'R$ ' + simulacao.resultado.precoAlvo.toFixed(2) : '—' }}</strong>
+              <strong>{{ simulacao.resultado.precoAlvo | reais }}</strong>
             </div>
             <div class="indicador">
               <span class="rotulo-micro">Receita esperada</span>
-              <strong>{{ simulacao.resultado.receitaEsperada !== null ? 'R$ ' + simulacao.resultado.receitaEsperada.toFixed(2) : '—' }}</strong>
+              <strong>{{ simulacao.resultado.receitaEsperada | reais }}</strong>
             </div>
             <div class="indicador">
               <span class="rotulo-micro">Resultado estimado</span>
-              <strong>{{ simulacao.resultado.resultadoEstimado !== null ? 'R$ ' + simulacao.resultado.resultadoEstimado.toFixed(2) : '—' }}</strong>
+              <strong>{{ simulacao.resultado.resultadoEstimado | reais }}</strong>
             </div>
           </div>
         </div>

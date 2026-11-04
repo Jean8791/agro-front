@@ -6,6 +6,7 @@ import { Permissoes } from '../../../auth/permissoes';
 import { Breadcrumb } from '../../../shared/components/breadcrumb/breadcrumb';
 import { Loader } from '../../../shared/components/loader/loader';
 import { mensagemDoErro } from '../../../shared/erro';
+import { DecimalPtPipe, ReaisPipe } from '../../../shared/formato';
 import { Modal } from '../../../shared/modal.service';
 import { Step } from '../../../shared/models/step';
 import { Toast } from '../../../shared/toast.service';
@@ -20,7 +21,7 @@ interface LinhaResumo {
 
 @Component({
   selector: 'app-raiox-simulacao-show',
-  imports: [MatButtonModule, MatIconModule, Breadcrumb, Loader],
+  imports: [MatButtonModule, MatIconModule, Breadcrumb, Loader, DecimalPtPipe, ReaisPipe],
   templateUrl: './simulacao-show.html',
   styleUrl: './simulacao-show.scss',
 })

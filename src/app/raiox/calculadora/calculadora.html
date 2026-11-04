@@ -345,32 +345,32 @@
             <div class="indicador">
               <span class="indicador-icone"><mat-icon>shopping_basket</mat-icon></span>
               <span class="rotulo-micro">Produção vendável</span>
-              <strong>{{ resultado().producaoComercial?.toFixed(2) ?? '—' }} {{ form.controls.unidadeComercial.value || 'unid.' }}</strong>
+              <strong>{{ resultado().producaoComercial | decimal }} {{ form.controls.unidadeComercial.value || 'unid.' }}</strong>
             </div>
             <div class="indicador">
               <span class="indicador-icone"><mat-icon>receipt_long</mat-icon></span>
               <span class="rotulo-micro">Custo total</span>
-              <strong>{{ resultado().custoTotal !== null ? 'R$ ' + resultado().custoTotal!.toFixed(2) : '—' }}</strong>
+              <strong>{{ resultado().custoTotal | reais }}</strong>
             </div>
             <div class="indicador">
               <span class="indicador-icone"><mat-icon>payments</mat-icon></span>
               <span class="rotulo-micro">Preço mínimo</span>
-              <strong>{{ resultado().precoMinimo !== null ? 'R$ ' + resultado().precoMinimo!.toFixed(2) : '—' }}</strong>
+              <strong>{{ resultado().precoMinimo | reais }}</strong>
             </div>
             <div class="indicador">
               <span class="indicador-icone"><mat-icon>trending_up</mat-icon></span>
               <span class="rotulo-micro">Preço alvo com margem</span>
-              <strong>{{ resultado().precoAlvo !== null ? 'R$ ' + resultado().precoAlvo!.toFixed(2) : '—' }}</strong>
+              <strong>{{ resultado().precoAlvo | reais }}</strong>
             </div>
             <div class="indicador">
               <span class="indicador-icone"><mat-icon>account_balance_wallet</mat-icon></span>
               <span class="rotulo-micro">Receita esperada</span>
-              <strong>{{ resultado().receitaEsperada !== null ? 'R$ ' + resultado().receitaEsperada!.toFixed(2) : '—' }}</strong>
+              <strong>{{ resultado().receitaEsperada | reais }}</strong>
             </div>
             <div class="indicador">
               <span class="indicador-icone"><mat-icon>insights</mat-icon></span>
               <span class="rotulo-micro">Resultado estimado</span>
-              <strong>{{ resultado().resultadoEstimado !== null ? 'R$ ' + resultado().resultadoEstimado!.toFixed(2) : '—' }}</strong>
+              <strong>{{ resultado().resultadoEstimado | reais }}</strong>
             </div>
           </div>
         </div>

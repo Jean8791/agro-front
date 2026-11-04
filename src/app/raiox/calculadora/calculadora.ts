@@ -11,6 +11,7 @@ import { RouterLink } from '@angular/router';
 import { catchError, debounceTime, distinctUntilChanged, map, of, startWith, switchMap, tap } from 'rxjs';
 import { Permissoes } from '../../auth/permissoes';
 import { mensagemDoErro } from '../../shared/erro';
+import { DecimalPtPipe, ReaisPipe } from '../../shared/formato';
 import { SePode } from '../../shared/se-pode';
 import { Toast } from '../../shared/toast.service';
 import { ChecklistService } from '../checklist/checklist.service';
@@ -42,6 +43,8 @@ const RESULTADO_VAZIO: ResultadoCalculo = {
 @Component({
   selector: 'app-raiox-calculadora',
   imports: [
+    DecimalPtPipe,
+    ReaisPipe,
     ReactiveFormsModule,
     FormsModule,
     MatButtonModule,
