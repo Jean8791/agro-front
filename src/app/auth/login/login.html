@@ -52,5 +52,22 @@
         {{ enviando() ? 'Entrando…' : 'Entrar' }}
       </button>
     </form>
+
+    <aside class="login-demo">
+      <p>
+        <strong>Quer só conhecer o sistema?</strong>
+        Entre com a conta de demonstração: <code>{{ demo.email }}</code> /
+        <code>{{ demo.senha }}</code>
+      </p>
+      <button
+        matButton="outlined"
+        type="button"
+        (click)="entrarComoVisitante()"
+        [disabled]="enviando()"
+      >
+        <mat-icon>visibility</mat-icon>
+        Entrar como visitante
+      </button>
+    </aside>
   </div>
 </div>
