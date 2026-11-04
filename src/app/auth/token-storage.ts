@@ -72,7 +72,8 @@ function lerClaims(token: string | null): UsuarioAutenticado | null {
 
   try {
     const payload = token.split('.')[1];
-    const json = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+    const binario = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+    const json = new TextDecoder().decode(Uint8Array.from(binario, (c) => c.charCodeAt(0)));
     const claims = JSON.parse(json) as {
       sub: string;
       email: string;
