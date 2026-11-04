@@ -144,6 +144,34 @@
   border-bottom: 1px solid var(--linha);
 }
 
+.aviso-academico {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  padding: 7px 26px;
+  color: var(--tinta-media);
+  background: var(--ambar-suave);
+  border-bottom: 1px solid var(--ambar-linha);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  text-align: center;
+
+  mat-icon {
+    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    color: var(--ambar);
+    font-size: 16px;
+  }
+
+  strong {
+    font-weight: 700;
+  }
+}
+
 .cabecalho-espaco {
   flex: 1 1 auto;
 }

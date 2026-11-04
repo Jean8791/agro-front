@@ -112,6 +112,22 @@ body {
   border-bottom: 1px solid var(--linha);
 }
 
+.cartao-cabecalho h2 {
+  margin: 6px 0 0;
+  font-size: 1.125rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.section-kicker {
+  display: block;
+  color: var(--tinta-tenue);
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .cartao-rodape {
   padding: 16px 24px;
   border-top: 1px solid var(--linha);

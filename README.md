@@ -2,6 +2,10 @@
 
 Front-end da plataforma de gestão para o agronegócio. Consome a API [agro-back](https://github.com/Jean8791/agro-back) e traz a **calculadora de preço mínimo (Raio-X)**, além dos cadastros de produtores, usuários e papéis.
 
+> **Projeto acadêmico, desenvolvido para fins de estudo.** Os dados de demonstração são fictícios e os cálculos não substituem orientação técnica ou contábil.
+
+**Demonstração:** https://agro-front-vsp7.onrender.com (botão *Entrar como visitante*). O back roda no plano gratuito do Render e pode levar até um minuto para responder no primeiro acesso.
+
 ## Stack
 
 - **Angular 21**: componentes standalone, *zoneless* (sem Zone.js) e sem SSR
