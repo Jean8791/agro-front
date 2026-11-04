@@ -7,6 +7,7 @@ import { permissaoGuard } from '../auth/auth.guard';
  * grupos de telas sob o mesmo prefixo `raiox/`.
  */
 export const raioxRoutes: Routes = [
+  { path: 'raiox', pathMatch: 'full', redirectTo: 'raiox/calculadora' },
   {
     path: 'raiox/calculadora',
     canActivate: [permissaoGuard('raioxsimulacao:listar')],

@@ -28,7 +28,7 @@ const MENU: ItemDeMenu[] = [
   {
     rotulo: 'Raio-X',
     icone: 'calculate',
-    rota: '/raiox/calculadora',
+    rota: '/raiox',
     permissao: 'raioxsimulacao:listar',
   },
   {

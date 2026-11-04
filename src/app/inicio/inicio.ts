@@ -58,9 +58,9 @@ export class Inicio {
       titulo: 'Quanto precisa receber',
       descricao:
         'Custo do ciclo, produção vendável e o menor preço que cobre a conta sem prejuízo.',
-      acao: 'Abrir cálculo',
-      rota: '/inicio',
-      disponivel: false,
+      acao: 'Abrir Raio-X',
+      rota: '/raiox/calculadora',
+      disponivel: this.permissoes.pode('raioxsimulacao:listar'),
     },
   ]);
 }
