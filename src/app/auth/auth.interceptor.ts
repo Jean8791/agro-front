@@ -2,6 +2,7 @@ import { HttpErrorResponse, HttpInterceptorFn, HttpRequest } from '@angular/comm
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, switchMap, throwError } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 import { TokenStorage } from './token-storage';
 
@@ -17,6 +18,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const storage = inject(TokenStorage);
   const auth = inject(AuthService);
   const router = inject(Router);
+
+  if (!req.url.startsWith(environment.apiUrl)) {
+    return next(req);
+  }
 
   const publica = ROTAS_PUBLICAS.some((rota) => req.url.includes(rota));
   const requisicao = publica ? req : comToken(req, storage.accessToken);
