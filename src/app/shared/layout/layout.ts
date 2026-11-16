@@ -9,7 +9,7 @@ import { CodigoPermissao } from '../../papel/models/permissao';
 import { SeletorProdutor } from '../../produtor/seletor/seletor-produtor';
 
 /**
- * Um item da barra lateral. Sem `permissao` nem `apenasSuperAdmin`, todo
+ * Um item das abas do topo. Sem `permissao` nem `apenasSuperAdmin`, todo
  * mundo vê. Produtor usa `apenasSuperAdmin`: não tem `CodigoPermissao`, é
  * papel de sistema (`SUPER_ADMIN`) no back.
  */
@@ -40,9 +40,9 @@ const MENU: ItemDeMenu[] = [
 ];
 
 /**
- * Casca das telas autenticadas: barra lateral fixa + cabeçalho + conteúdo da
- * rota filha. Abaixo de 960px a barra sai do fluxo e vira gaveta, aberta pelo
- * botão de menu do cabeçalho.
+ * Casca das telas autenticadas: topo com abas + conteúdo da
+ * rota filha. Abaixo de 960px as abas viram um menu recolhido, aberto pelo
+ * botão de menu do topo.
  */
 @Component({
   selector: 'app-layout',

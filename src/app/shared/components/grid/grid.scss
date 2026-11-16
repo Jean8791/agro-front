@@ -1,4 +1,4 @@
-// O grid é um cartão: o `overflow: hidden` faz o canto largo valer também para
+// O grid é um cartão: o `overflow: hidden` faz o canto arredondado valer também para
 // a primeira e a última linha da tabela.
 .grid-cartao {
   overflow: hidden;
@@ -9,30 +9,31 @@
   overflow-x: auto;
 }
 
-// Fundo branco explícito: a paleta da marca deixa a superfície padrão do
+// Fundo de papel explícito: a paleta da marca deixa a superfície padrão do
 // Material esverdeada.
 table {
   width: 100%;
   background: var(--superficie);
 }
 
-// Cabeçalho preso no topo da rolagem, em cinza claro e caixa-alta miúda.
+// Cabeçalho preso no topo da rolagem, em tom de areia e caixa-alta miúda.
 th {
   position: sticky;
   top: 0;
   z-index: 2;
-  background: #fafbfb;
-  border-bottom: 1px solid var(--linha) !important;
-  color: var(--tinta-tenue) !important;
+  background: var(--terra-50);
+  border-bottom: 1px solid var(--linha-forte) !important;
+  color: var(--terra-700) !important;
   font-size: 0.688rem !important;
-  font-weight: 800 !important;
-  letter-spacing: 0.07em;
+  font-weight: 700 !important;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   white-space: nowrap;
 }
 
 td {
-  border-bottom-color: var(--linha) !important;
+  border-bottom: var(--pauta) !important;
+  border-bottom-color: var(--linha-forte) !important;
   color: var(--tinta-media) !important;
   font-size: 0.875rem !important;
 }
@@ -42,7 +43,12 @@ td {
 }
 
 .grid-linha:hover {
-  background-color: #fafbfb;
+  background-color: var(--terra-50);
+}
+
+// Zebra bem suave.
+.grid-linha:nth-of-type(even):not(:hover):not(.grid-linha-selecionada) {
+  background-color: rgba(230, 207, 174, 0.12);
 }
 
 // Só o modo selecionável dá indício de que a linha responde ao clique.
@@ -52,7 +58,7 @@ td {
 
 .grid-linha-selecionada,
 .grid-linha-selecionada:hover {
-  background-color: var(--marca-50);
+  background-color: var(--terra-100);
 }
 
 // ------------------------------------------------------------------ células
@@ -70,12 +76,12 @@ td {
   flex: 0 0 36px;
   width: 36px;
   height: 36px;
-  color: var(--marca-900);
-  background: var(--marca-50);
-  border: 1px solid var(--marca-100);
+  color: var(--terra-900);
+  background: var(--terra-100);
+  border: 1px solid var(--terra-200);
   border-radius: 50%;
   font-size: 0.688rem;
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
 }
 
@@ -151,7 +157,7 @@ td {
 
   span {
     height: 46px;
-    background: #f1f4f4;
+    background: var(--terra-100);
     border-radius: var(--raio-md);
     animation: grid-pulso 1.4s ease-in-out infinite;
   }
@@ -174,6 +180,6 @@ td {
 }
 
 mat-paginator {
-  background: #fcfdfd;
-  border-top: 1px solid var(--linha);
+  background: var(--superficie);
+  border-top: 1px solid var(--linha-forte);
 }

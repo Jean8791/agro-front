@@ -1,5 +1,5 @@
-// Fundo verde profundo com um clarão diagonal: é a única tela em que a cor da
-// marca ocupa a superfície inteira, e o cartão branco flutua sobre ela.
+// Capa do caderno: o verde-petróleo ocupa a tela inteira e a folha de papel
+// fica sobre ela, com uma moldura de fio duplo.
 .login-pagina {
   display: flex;
   align-items: center;
@@ -7,7 +7,6 @@
   min-height: 100vh;
   padding: 1.5rem;
   background:
-    radial-gradient(circle at 20% 0%, rgba(52, 211, 153, 0.16), transparent 26rem),
     var(--marca-950);
 }
 
@@ -15,8 +14,10 @@
   width: 100%;
   max-width: 26rem;
   padding: 40px 34px;
-  border-color: transparent;
-  box-shadow: 0 30px 70px rgba(7, 36, 35, 0.4);
+  border-color: var(--terra-500);
+  box-shadow:
+    0 0 0 6px var(--superficie),
+    0 0 0 7px var(--terra-500);
 }
 
 .login-marca {
@@ -24,9 +25,10 @@
 
   h1 {
     margin: 18px 0 0;
-    font-size: 1.75rem;
-    font-weight: 800;
-    letter-spacing: -0.03em;
+    font-family: var(--fonte-titulo);
+    font-size: 2.25rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
   }
 
   p {
@@ -42,11 +44,12 @@
   width: 52px;
   height: 52px;
   margin: 0 auto;
-  color: #fff;
+  color: var(--superficie);
   background: var(--marca-900);
   border-radius: var(--raio-lg);
-  font-size: 1.4rem;
-  font-weight: 900;
+  font-family: var(--fonte-titulo);
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
 form {
@@ -86,7 +89,7 @@ mat-form-field mat-icon[matPrefix] {
 
 .login-botao {
   min-height: 50px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .login-demo {
@@ -95,8 +98,8 @@ mat-form-field mat-icon[matPrefix] {
   gap: 12px;
   margin-top: 1.5rem;
   padding: 16px;
-  background: var(--marca-50);
-  border: 1px solid var(--marca-100);
+  background: var(--terra-50);
+  border: 1px dashed var(--terra-200);
   border-radius: var(--raio-md);
 
   p {
@@ -131,7 +134,7 @@ mat-form-field mat-icon[matPrefix] {
   mat-icon {
     width: 16px;
     height: 16px;
-    color: var(--ambar);
+    color: var(--terra-700);
     font-size: 16px;
   }
 }

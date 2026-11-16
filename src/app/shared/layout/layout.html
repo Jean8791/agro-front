@@ -1,81 +1,67 @@
-<div class="casca" [class.casca-aberta]="menuAberto()">
-  <aside class="barra">
-    <a class="barra-marca" routerLink="/inicio" (click)="fecharMenu()">
+<div class="casca">
+  <header class="topo">
+    <a class="marca" routerLink="/inicio" (click)="fecharMenu()">
       <span class="marca-simbolo">A</span>
       <span class="marca-nome">Agro</span>
     </a>
 
-    <nav class="barra-menu">
+    <nav class="abas" [class.abas-abertas]="menuAberto()" aria-label="Principal">
       @for (item of menu(); track item.rota) {
         <a
-          class="menu-item"
+          class="aba"
           [routerLink]="item.rota"
-          routerLinkActive="menu-item-ativo"
+          routerLinkActive="aba-ativa"
           (click)="fecharMenu()"
         >
-          <mat-icon>{{ item.icone }}</mat-icon>
-          <span>{{ item.rotulo }}</span>
+          {{ item.rotulo }}
         </a>
       }
     </nav>
 
-    @if (usuario(); as logado) {
-      <div class="barra-rodape">
-        <span class="ponto-ativo"></span>
-        <span>{{ logado.papelNome }}</span>
-      </div>
+    <span class="topo-espaco"></span>
+
+    @if (superAdmin()) {
+      <app-seletor-produtor />
     }
-  </aside>
 
-  <!-- Só aparece com a gaveta aberta, no mobile: fechar clicando fora. -->
-  <div class="veu" (click)="fecharMenu()"></div>
-
-  <div class="coluna">
-    <header class="cabecalho">
-      <button
-        matIconButton
-        class="botao-gaveta"
-        (click)="alternarMenu()"
-        aria-label="Abrir ou fechar o menu"
-      >
-        <mat-icon>menu</mat-icon>
+    @if (usuario(); as logado) {
+      <button class="conta" [matMenuTriggerFor]="menuConta" aria-label="Conta">
+        <span class="conta-texto">
+          <strong>{{ logado.email }}</strong>
+          <small>{{ logado.papelNome }}</small>
+        </span>
+        <span class="conta-avatar">{{ iniciais() }}</span>
+        <mat-icon class="conta-seta">expand_more</mat-icon>
       </button>
 
-      @if (superAdmin()) {
-        <app-seletor-produtor />
-      }
-
-      <span class="cabecalho-espaco"></span>
-
-      @if (usuario(); as logado) {
-        <button class="conta" [matMenuTriggerFor]="menuConta" aria-label="Conta">
-          <span class="conta-texto">
-            <strong>{{ logado.email }}</strong>
-            <small>{{ logado.papelNome }}</small>
-          </span>
-          <span class="conta-avatar">{{ iniciais() }}</span>
-          <mat-icon class="conta-seta">expand_more</mat-icon>
+      <mat-menu #menuConta="matMenu">
+        <button mat-menu-item (click)="sair()">
+          <mat-icon>logout</mat-icon>
+          <span>Sair do sistema</span>
         </button>
+      </mat-menu>
+    }
 
-        <mat-menu #menuConta="matMenu">
-          <button mat-menu-item (click)="sair()">
-            <mat-icon>logout</mat-icon>
-            <span>Sair do sistema</span>
-          </button>
-        </mat-menu>
-      }
-    </header>
+    <button
+      matIconButton
+      class="botao-menu"
+      (click)="alternarMenu()"
+      [attr.aria-expanded]="menuAberto()"
+      aria-label="Abrir ou fechar o menu"
+    >
+      <mat-icon>{{ menuAberto() ? 'close' : 'menu' }}</mat-icon>
+    </button>
+  </header>
 
-    <p class="aviso-academico" role="note">
-      <mat-icon>school</mat-icon>
-      <span>
-        <strong>Projeto acadêmico, para fins de estudo.</strong>
-        Os dados são fictícios e os cálculos não substituem orientação técnica.
-      </span>
-    </p>
+  <p class="aviso-academico" role="note">
+    <mat-icon>school</mat-icon>
+    <span>
+      <strong>Projeto acadêmico, para fins de estudo.</strong>
+      Os dados são fictícios e os cálculos não substituem orientação técnica.
+    </span>
+  </p>
 
-    <main class="conteudo">
-      <router-outlet />
-    </main>
-  </div>
+  <main class="conteudo">
+    <router-outlet />
+  </main>
 </div>

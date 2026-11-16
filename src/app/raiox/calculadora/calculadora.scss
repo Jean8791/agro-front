@@ -27,7 +27,7 @@
 .raiox-subnav-ativo {
   padding: 6px 10px;
   color: var(--marca-900);
-  background: var(--marca-100);
+  background: var(--terra-100);
   border-radius: var(--raio-md);
 }
 
@@ -81,17 +81,24 @@
   flex: 1 1 18rem;
 }
 
+// Custos em colunas: o grid reparte a largura em colunas iguais.
 .custos-linha {
-  row-gap: 0.75rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0.75rem 1rem;
 }
 
-.campo-custo {
-  flex: 1 1 9rem;
+// Rótulos de campo como etiquetas de caderno.
+.cartao mat-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 // ------------------------------------------------------------- checklist de apoio
 .checklist-apoio {
-  border-top: 1px solid var(--linha);
+  border-top: var(--pauta);
 }
 
 .checklist-grade {
@@ -121,38 +128,6 @@
   }
 }
 
-// ------------------------------------------------------------------ semáforo
-.semaforo {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 18px;
-  border-radius: var(--raio-lg);
-
-  mat-icon {
-    flex: 0 0 28px;
-    width: 28px;
-    height: 28px;
-    font-size: 28px;
-  }
-
-  strong {
-    display: block;
-    font-size: 1rem;
-    font-weight: 800;
-  }
-
-  p {
-    margin: 4px 0 0;
-    font-size: 0.8125rem;
-  }
-}
-
-.semaforo-vazio {
-  color: var(--tinta-fraca);
-  background: var(--pagina);
-}
-
 .lista-avisos {
   margin: 14px 0 0;
   padding-left: 1.1rem;
@@ -165,39 +140,11 @@
   color: var(--vermelho);
 }
 
-// --------------------------------------------------------------- indicadores
-.indicadores-grade {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-top: 18px;
-
-  .indicador {
-    padding: 14px;
-
-    .indicador-icone {
-      width: 34px;
-      height: 34px;
-      margin-bottom: 8px;
-
-      mat-icon {
-        font-size: 18px;
-        width: 18px;
-        height: 18px;
-      }
-    }
-
-    strong {
-      font-size: 1.0625rem;
-    }
-  }
-}
-
 .rodape-salvar {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background: #fcfdfd;
+  background: var(--superficie);
 }
 
 .campo-nome-simulacao {
