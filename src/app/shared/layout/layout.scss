@@ -2,190 +2,102 @@
   display: block;
 }
 
-// A casca ocupa a viewport inteira e só o conteúdo rola: a barra lateral e o
-// cabeçalho ficam parados, como em painel administrativo.
+// A casca ocupa a viewport inteira e só o conteúdo rola: o topo com as abas
+// fica parado.
 .casca {
   display: flex;
+  flex-direction: column;
   height: 100vh;
   overflow: hidden;
   background: var(--pagina);
 }
 
-// ---------------------------------------------------------- barra lateral
-.barra {
+// ------------------------------------------------------------------- topo
+.topo {
+  position: relative;
   display: flex;
-  flex: 0 0 var(--barra-largura);
-  flex-direction: column;
-  width: var(--barra-largura);
-  color: #fff;
-  background: var(--marca-900);
+  flex: 0 0 var(--cabecalho-altura);
+  align-items: stretch;
+  gap: 8px;
+  height: var(--cabecalho-altura);
+  padding: 0 28px;
+  background: var(--superficie);
+  border-bottom: 1px solid var(--linha-forte);
 }
 
-.barra-marca {
+.topo-espaco {
+  flex: 1 1 auto;
+}
+
+.marca {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 26px 22px;
-  color: inherit;
+  gap: 10px;
+  margin-right: 24px;
+  color: var(--marca-900);
   text-decoration: none;
 }
 
 .marca-simbolo {
   display: grid;
   place-items: center;
-  width: 38px;
-  height: 38px;
-  color: var(--marca-950);
-  background: var(--acento);
+  width: 32px;
+  height: 32px;
+  color: var(--superficie);
+  background: var(--marca-900);
   border-radius: var(--raio-md);
-  font-size: 1.05rem;
-  font-weight: 900;
+  font-family: var(--fonte-titulo);
+  font-size: 1.1rem;
+  font-weight: 700;
 }
 
 .marca-nome {
-  font-size: 1.15rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-family: var(--fonte-titulo);
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
-.barra-menu {
+// ------------------------------------------------------------------- abas
+// Sublinhado ocre na aba ativa, como a orelha de um caderno.
+.abas {
   display: flex;
-  flex: 1;
-  flex-direction: column;
+  align-items: stretch;
   gap: 4px;
-  padding: 8px 14px;
-  overflow-y: auto;
 }
 
-.menu-item {
+.aba {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 11px 14px;
-  color: rgba(255, 255, 255, 0.66);
-  border-radius: var(--raio-md);
-  font-size: 0.875rem;
-  font-weight: 600;
+  padding: 0 14px;
+  color: var(--tinta-fraca);
+  border-bottom: 3px solid transparent;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-decoration: none;
-  transition: background-color 0.15s, color 0.15s;
-
-  mat-icon {
-    flex: 0 0 20px;
-    width: 20px;
-    height: 20px;
-    font-size: 20px;
-  }
+  text-transform: uppercase;
+  transition: color 0.15s, border-color 0.15s;
 
   &:hover {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.07);
+    color: var(--tinta);
+    border-bottom-color: var(--terra-200);
   }
 }
 
-// Estado ativo: fundo mais claro e a barra de acento à esquerda, para achar a
-// tela atual sem ler o texto.
-.menu-item-ativo,
-.menu-item-ativo:hover {
-  position: relative;
-  color: #fff;
-  background: rgba(255, 255, 255, 0.13);
-  font-weight: 700;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: -14px;
-    width: 3px;
-    height: 22px;
-    background: var(--acento);
-    border-radius: 0 3px 3px 0;
-    transform: translateY(-50%);
-  }
+.aba-ativa,
+.aba-ativa:hover {
+  color: var(--marca-900);
+  border-bottom-color: var(--terra-500);
 }
 
-.barra-rodape {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 18px 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.55);
-  font-size: 0.688rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.ponto-ativo {
-  width: 7px;
-  height: 7px;
-  background: var(--acento);
-  border-radius: 50%;
-}
-
-// -------------------------------------------------------- coluna principal
-.coluna {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  min-width: 0;
-  overflow: hidden;
-}
-
-.cabecalho {
-  display: flex;
-  flex: 0 0 var(--cabecalho-altura);
-  align-items: center;
-  gap: 8px;
-  height: var(--cabecalho-altura);
-  padding: 0 26px;
-  background: var(--superficie);
-  border-bottom: 1px solid var(--linha);
-}
-
-.aviso-academico {
-  display: flex;
-  flex: 0 0 auto;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin: 0;
-  padding: 7px 26px;
-  color: var(--tinta-media);
-  background: var(--ambar-suave);
-  border-bottom: 1px solid var(--ambar-linha);
-  font-size: 0.75rem;
-  line-height: 1.4;
-  text-align: center;
-
-  mat-icon {
-    flex: 0 0 auto;
-    width: 16px;
-    height: 16px;
-    color: var(--ambar);
-    font-size: 16px;
-  }
-
-  strong {
-    font-weight: 700;
-  }
-}
-
-.cabecalho-espaco {
-  flex: 1 1 auto;
-}
-
-// O botão de gaveta só existe no mobile; no desktop a barra está sempre visível.
-.botao-gaveta {
-  display: none;
-}
-
+// ------------------------------------------------------------------ conta
 .conta {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 6px 10px 6px 14px;
+  align-self: center;
+  padding: 4px 8px 4px 12px;
   color: inherit;
   background: none;
   border: none;
@@ -195,7 +107,7 @@
   transition: background-color 0.15s;
 
   &:hover {
-    background: var(--pagina);
+    background: var(--terra-50);
   }
 }
 
@@ -211,10 +123,10 @@
   }
 
   small {
-    color: var(--tinta-tenue);
+    color: var(--terra-700);
     font-size: 0.625rem;
-    font-weight: 800;
-    letter-spacing: 0.09em;
+    font-weight: 700;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
   }
 }
@@ -222,20 +134,54 @@
 .conta-avatar {
   display: grid;
   place-items: center;
-  width: 38px;
-  height: 38px;
-  color: var(--marca-900);
-  background: var(--marca-50);
-  border-radius: var(--raio-md);
+  width: 34px;
+  height: 34px;
+  color: var(--terra-900);
+  background: var(--terra-100);
+  border-radius: 50%;
   font-size: 0.75rem;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .conta-seta {
-  color: var(--tinta-tenue);
-  font-size: 18px;
   width: 18px;
   height: 18px;
+  color: var(--tinta-tenue);
+  font-size: 18px;
+}
+
+.botao-menu {
+  display: none;
+  align-self: center;
+}
+
+// ----------------------------------------------------------------- aviso
+.aviso-academico {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  padding: 7px 26px;
+  color: var(--tinta-media);
+  background: var(--terra-50);
+  border-bottom: var(--pauta);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  text-align: center;
+
+  mat-icon {
+    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    color: var(--terra-700);
+    font-size: 16px;
+  }
+
+  strong {
+    font-weight: 700;
+  }
 }
 
 // Teto de largura: sem ele, em monitor largo a linha da tabela estica até virar
@@ -244,52 +190,67 @@
   align-self: center;
   flex: 1;
   width: 100%;
-  max-width: 1480px;
-  padding: 30px;
+  max-width: 1280px;
+  padding: 32px 28px;
   overflow-y: auto;
 }
 
-.veu {
-  display: none;
-}
-
 // ------------------------------------------------------------------ mobile
+// Abaixo de 960px as abas viram um menu recolhido sob o topo.
 @media (max-width: 960px) {
-  .barra {
-    position: fixed;
-    z-index: 60;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    transform: translateX(-100%);
-    transition: transform 0.22s ease;
+  .topo {
+    padding: 0 14px;
   }
 
-  .casca-aberta .barra {
-    transform: translateX(0);
+  .marca {
+    margin-right: 0;
   }
 
-  .botao-gaveta {
+  .botao-menu {
     display: inline-flex;
   }
 
-  .casca-aberta .veu {
-    display: block;
-    position: fixed;
-    z-index: 50;
-    inset: 0;
-    background: rgba(17, 24, 39, 0.45);
+  .conta-texto,
+  .conta-seta {
+    display: none;
   }
 
-  .conta-texto {
+  .conta {
+    padding: 4px;
+  }
+
+  .abas {
+    position: absolute;
+    z-index: 50;
+    top: 100%;
+    right: 0;
+    left: 0;
     display: none;
+    flex-direction: column;
+    gap: 0;
+    background: var(--superficie);
+    border-bottom: 1px solid var(--linha-forte);
+    box-shadow: var(--sombra-md);
+  }
+
+  .abas-abertas {
+    display: flex;
+  }
+
+  .aba {
+    padding: 14px 20px;
+    border-bottom: var(--pauta);
+    border-left: 3px solid transparent;
+  }
+
+  .aba-ativa,
+  .aba-ativa:hover {
+    border-bottom: var(--pauta);
+    border-left-color: var(--terra-500);
+    background: var(--terra-50);
   }
 
   .conteudo {
     padding: 20px 16px;
-  }
-
-  .cabecalho {
-    padding: 0 14px;
   }
 }

@@ -1,22 +1,28 @@
 .inicio-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
-  gap: 20px;
+  gap: 24px;
   align-items: stretch;
 }
 
-// Flex em coluna com a ação empurrada para baixo: os cartões terminam na mesma
-// linha mesmo com descrições de tamanhos diferentes.
+// Cada atalho é uma página do caderno: margem pautada à esquerda e a etapa em
+// caixa-alta. Flex em coluna com a ação empurrada para baixo, para os cartões
+// terminarem na mesma linha.
 .inicio-card {
   display: flex;
   flex-direction: column;
-  padding: 26px;
+  padding: 26px 26px 26px 34px;
+  background-image: linear-gradient(90deg, var(--terra-200) 0 1px, transparent 1px);
+  background-position: 22px 0;
+  background-repeat: no-repeat;
+  border-top: 3px solid var(--terra-500);
 
   h2 {
     margin: 6px 0 0;
-    font-size: 1.125rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
+    font-family: var(--fonte-titulo);
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
 
   .intro {
@@ -26,12 +32,13 @@
 
 // O que ainda não existe fica visível, mas sem convidar ao clique.
 .inicio-card-inativo {
-  background: #fbfcfc;
+  background-color: var(--pagina);
+  border-top-color: var(--linha-forte);
   box-shadow: none;
 
   .inicio-icone {
     color: var(--tinta-tenue);
-    background: #f3f4f4;
+    background: var(--linha);
   }
 }
 
@@ -41,8 +48,8 @@
   width: 46px;
   height: 46px;
   margin-bottom: 18px;
-  color: var(--marca-900);
-  background: var(--marca-50);
+  color: var(--terra-700);
+  background: var(--terra-50);
   border-radius: var(--raio-lg);
 }
 
@@ -50,7 +57,7 @@
   align-self: flex-start;
   margin-top: 22px;
   min-height: 44px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .inicio-pendente {

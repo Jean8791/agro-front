@@ -1,8 +1,9 @@
-// Identidade do painel: superfícies claras e neutras, cartões brancos de canto
-// largo com sombra rasa, e a cor da marca (#0E3B3A, verde-petróleo) usada só em
-// blocos sólidos — barra lateral, botão primário, destaque. A paleta do Material
-// foi gerada a partir do mesmo #0E3B3A (ver styles/_theme-colors), então
-// componente pronto e classe própria saem na mesma cor.
+// Identidade "caderno de campo": fundo creme, cartões em tom de papel com borda
+// de areia e quase sem sombra, títulos e números de destaque em serifada
+// (Fraunces) e Inter só em dados, tabelas e formulários. O verde-petróleo
+// (#0E3B3A) segue como cor de marca e o ocre/barro (--terra-*) entra como segunda
+// cor, em destaques e rótulos de seção. A paleta do Material foi gerada a partir
+// do #0E3B3A (ver styles/_theme-colors); o tertiary é puxado para o barro aqui.
 @use '@angular/material' as mat;
 @use 'styles/theme-colors' as tema;
 
@@ -23,7 +24,7 @@ html {
 :root {
   // ---- marca
   --marca-950: #072423;
-  --marca-900: #0e3b3a; // barra lateral e botão primário
+  --marca-900: #0e3b3a; // botão primário e destaques sólidos
   --marca-800: #155150; // hover
   --marca-700: #1c6766;
   --marca-600: #2a8483;
@@ -32,50 +33,66 @@ html {
   --acento: #34d399;
   --acento-suave: #d1fae5;
 
+  // ---- terra (segunda cor)
+  --terra-900: #6b4423;
+  --terra-700: #8f5a26; // rótulos de seção (contraste 5:1 sobre o papel)
+  --terra-500: #b4783a; // destaque, sublinhado ativo
+  --terra-200: #e6cfae;
+  --terra-100: #f1e3cc;
+  --terra-50: #f7eedd;
+
   // ---- superfícies
-  --pagina: #f6f8f8; // fundo atrás dos cartões
-  --superficie: #ffffff; // cartão
+  --pagina: #f4efe4; // fundo creme atrás dos cartões
+  --superficie: #fbf8f1; // papel do cartão
 
   // ---- texto e linhas
-  --tinta: #111827;
-  --tinta-media: #374151;
-  --tinta-fraca: #6b7280;
-  --tinta-tenue: #9ca3af;
-  --linha: #eef1f1;
-  --linha-forte: #e2e7e7;
+  --tinta: #1f2a24;
+  --tinta-media: #3d4640;
+  --tinta-fraca: #5f655d;
+  --tinta-tenue: #7d8077;
+  --linha: #e6dcc6; // areia
+  --linha-forte: #d6c8a8;
+
+  // ---- tipografia
+  --fonte-titulo: Fraunces, 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --fonte-dados: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   // ---- estados
-  --vermelho: #dc2626;
-  --vermelho-suave: #fef2f2;
-  --vermelho-linha: #fecaca;
-  --ambar: #d97706;
-  --ambar-suave: #fffbeb;
-  --ambar-linha: #fde68a;
-  --verde: #059669;
-  --verde-suave: #ecfdf5;
-  --verde-linha: #a7f3d0;
-  --azul: #2563eb;
-  --azul-suave: #eff6ff;
-  --azul-linha: #bfdbfe;
+  --vermelho: #b42318;
+  --vermelho-suave: #fbe9e4;
+  --vermelho-linha: #efb9ad;
+  --ambar: #8a5200;
+  --ambar-suave: #fbefcc;
+  --ambar-linha: #e8cd7f;
+  --verde: #1a6b45;
+  --verde-suave: #e3f0e0;
+  --verde-linha: #b5d6b0;
+  --azul: #1f4fb0;
+  --azul-suave: #e8eef8;
+  --azul-linha: #bccbe6;
 
   // ---- forma
-  --raio-xl: 24px; // cartão
-  --raio-lg: 16px; // campo, botão grande
-  --raio-md: 12px; // botão de ícone, pill quadrado
-  --raio-sm: 8px;
-  --sombra-sm: 0 1px 3px rgba(16, 24, 40, 0.06), 0 1px 2px rgba(16, 24, 40, 0.04);
-  --sombra-md: 0 8px 24px rgba(16, 24, 40, 0.08);
-  --sombra-marca: 0 10px 22px rgba(14, 59, 58, 0.18);
+  --raio-xl: 10px; // cartão
+  --raio-lg: 8px; // campo, botão grande
+  --raio-md: 6px; // botão de ícone
+  --raio-sm: 4px;
+  --sombra-sm: 0 1px 0 rgba(107, 68, 35, 0.06);
+  --sombra-md: 0 2px 8px rgba(107, 68, 35, 0.1);
+  --sombra-marca: none;
+  --pauta: 1px dotted var(--linha-forte); // divisor pontilhado de caderno
 
   // ---- medidas da casca
-  --barra-largura: 260px;
-  --cabecalho-altura: 76px;
+  --cabecalho-altura: 64px;
 
   // A cor primária do Material é a própria cor da marca: o tom 40 que a paleta
   // gera (#3c6564) é claro demais para o botão principal. Como `:root` tem mais
   // especificidade que o `html` do mat.theme, isto vence sem !important.
   --mat-sys-primary: var(--marca-900);
   --mat-sys-on-primary: #ffffff;
+  --mat-sys-tertiary: var(--terra-700);
+  --mat-sys-on-tertiary: #ffffff;
+  --mat-sys-surface: var(--superficie);
+  --mat-sys-background: var(--pagina);
 }
 
 * {
@@ -87,15 +104,14 @@ body {
   height: 100%;
   color: var(--tinta);
   background: var(--pagina);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: var(--fonte-dados);
   line-height: 1.5;
   color-scheme: light;
 }
 
 // ------------------------------------------------------------------- cartão
-// A superfície branca sobre a qual tudo acontece. Borda de 1px em cinza quase
-// imperceptível + sombra rasa: quem separa o cartão do fundo é a borda, a
-// sombra só dá o descolamento.
+// A folha de papel sobre a qual tudo acontece. Quem separa o cartão do fundo é
+// a borda cor de areia; a sombra é só um fio embaixo.
 .cartao {
   background: var(--superficie);
   border: 1px solid var(--linha);
@@ -114,17 +130,18 @@ body {
 
 .cartao-cabecalho h2 {
   margin: 6px 0 0;
-  font-size: 1.125rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-family: var(--fonte-titulo);
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .section-kicker {
   display: block;
-  color: var(--tinta-tenue);
-  font-size: 0.625rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
+  color: var(--terra-700);
+  font-size: 0.688rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
@@ -151,9 +168,10 @@ body {
 
   h1 {
     margin: 0;
-    font-size: 1.5rem;
-    font-weight: 800;
-    letter-spacing: -0.025em;
+    font-family: var(--fonte-titulo);
+    font-size: 1.75rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
   }
 
   p {
@@ -179,8 +197,8 @@ body {
   border: 1px solid transparent;
   border-radius: 999px;
   font-size: 0.688rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   white-space: nowrap;
 
@@ -210,7 +228,7 @@ body {
 
   &.cinza {
     color: var(--tinta-fraca);
-    background: #f3f4f6;
+    background: var(--terra-50);
     border-color: var(--linha-forte);
   }
 }
@@ -219,10 +237,10 @@ body {
 // Rótulo miúdo em caixa-alta espaçada que abre um bloco ou nomeia um campo.
 .rotulo-micro {
   display: block;
-  color: var(--tinta-tenue);
-  font-size: 0.625rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
+  color: var(--tinta-fraca);
+  font-size: 0.688rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
@@ -259,17 +277,18 @@ body {
     width: 46px;
     height: 46px;
     margin-bottom: 16px;
-    color: var(--marca-900);
-    background: var(--marca-50);
+    color: var(--terra-700);
+    background: var(--terra-50);
     border-radius: var(--raio-lg);
   }
 
   strong {
     display: block;
     margin-top: 2px;
-    font-size: 1.5rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
+    font-family: var(--fonte-titulo);
+    font-size: 1.75rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
 }
 
@@ -290,9 +309,126 @@ body {
   background: var(--verde-suave);
 }
 
+// ------------------------------------------------------------------ semáforo
+// Painel de leitura: a cor do estado cobre o painel todo e o preço mínimo é o
+// maior texto da tela. Os tons vêm de --vermelho/--ambar/--verde, escolhidos
+// com contraste de pelo menos 4,5:1 sobre o fundo suave de cada estado.
+.semaforo {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid currentColor;
+  border-radius: var(--raio-lg);
+
+  mat-icon {
+    flex: 0 0 28px;
+    width: 28px;
+    height: 28px;
+    font-size: 28px;
+  }
+
+  strong {
+    display: block;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: var(--tinta-media);
+    font-size: 0.8125rem;
+  }
+}
+
+.semaforo-texto {
+  flex: 1;
+  min-width: 0;
+}
+
+.semaforo-leitura {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px dotted currentColor;
+
+  .rotulo-micro {
+    color: inherit;
+  }
+}
+
+.semaforo-preco {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--fonte-titulo);
+  font-size: 2.75rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.semaforo-vazio {
+  color: var(--tinta-fraca);
+  background: var(--pagina);
+  border-style: dashed;
+}
+
+// ---------------------------------------------------------- folha de cálculo
+// Memória de cálculo como folha pautada: rótulo à esquerda, valor à direita,
+// pontilhado entre os dois.
+.folha {
+  margin-top: 20px;
+}
+
+.folha-titulo {
+  margin-bottom: 4px;
+  color: var(--terra-700);
+}
+
+.folha-linha {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 9px 0;
+  border-bottom: var(--pauta);
+  font-size: 0.875rem;
+
+  &::after {
+    content: '';
+    order: 1;
+    flex: 1 1 12px;
+    min-width: 12px;
+    border-bottom: var(--pauta);
+    transform: translateY(-3px);
+  }
+
+  span {
+    order: 0;
+    color: var(--tinta-media);
+  }
+
+  strong {
+    order: 2;
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    text-align: right;
+  }
+
+  &:last-child {
+    border-bottom: 2px solid var(--linha-forte);
+
+    strong {
+      font-family: var(--fonte-titulo);
+      font-size: 1.0625rem;
+    }
+  }
+}
+
 // --------------------------------------------------- ajustes do Material
 // O Material 21 sai com cantos e pesos do Material 3; aqui ele é puxado para a
-// forma do resto do painel — canto largo, rótulo em negrito.
+// forma do resto do caderno — canto moderado, rótulo em negrito.
 html {
   @include mat.button-overrides(
     (
@@ -320,15 +456,8 @@ html {
   );
 }
 
-// Botão preenchido: a sombra colorida é o que dá o peso de "ação principal".
-.mat-mdc-unelevated-button.mat-primary,
-.mat-mdc-unelevated-button:not([disabled]) {
-  box-shadow: var(--sombra-marca);
-}
-
 // Confirmar uma exclusão não pode sair na cor da marca — o vermelho é o aviso.
 .botao-perigo {
   --mat-button-filled-container-color: var(--vermelho);
   --mat-button-filled-label-text-color: #fff;
-  box-shadow: 0 10px 22px rgba(220, 38, 38, 0.22) !important;
-}
+  }

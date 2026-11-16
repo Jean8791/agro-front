@@ -320,9 +320,13 @@
                       : 'edit_note'
               }}
             </mat-icon>
-            <div>
+            <div class="semaforo-texto">
               <strong>{{ resultado().mensagem }}</strong>
               <p>{{ resultado().acao }}</p>
+              <div class="semaforo-leitura">
+                <span class="rotulo-micro">Preço mínimo por {{ form.controls.unidadeComercial.value || 'unid.' }}</span>
+                <span class="semaforo-preco">{{ resultado().precoMinimo | reais }}</span>
+              </div>
             </div>
           </div>
 
@@ -341,35 +345,26 @@
             </ul>
           }
 
-          <div class="indicadores-grade">
-            <div class="indicador">
-              <span class="indicador-icone"><mat-icon>shopping_basket</mat-icon></span>
-              <span class="rotulo-micro">Produção vendável</span>
+          <div class="folha" role="group" aria-label="Memória de cálculo">
+            <span class="rotulo-micro folha-titulo">Memória de cálculo</span>
+            <div class="folha-linha">
+              <span>Produção vendável</span>
               <strong>{{ resultado().producaoComercial | decimal }} {{ form.controls.unidadeComercial.value || 'unid.' }}</strong>
             </div>
-            <div class="indicador">
-              <span class="indicador-icone"><mat-icon>receipt_long</mat-icon></span>
-              <span class="rotulo-micro">Custo total</span>
+            <div class="folha-linha">
+              <span>Custo total</span>
               <strong>{{ resultado().custoTotal | reais }}</strong>
             </div>
-            <div class="indicador">
-              <span class="indicador-icone"><mat-icon>payments</mat-icon></span>
-              <span class="rotulo-micro">Preço mínimo</span>
-              <strong>{{ resultado().precoMinimo | reais }}</strong>
-            </div>
-            <div class="indicador">
-              <span class="indicador-icone"><mat-icon>trending_up</mat-icon></span>
-              <span class="rotulo-micro">Preço alvo com margem</span>
+            <div class="folha-linha">
+              <span>Preço alvo com margem</span>
               <strong>{{ resultado().precoAlvo | reais }}</strong>
             </div>
-            <div class="indicador">
-              <span class="indicador-icone"><mat-icon>account_balance_wallet</mat-icon></span>
-              <span class="rotulo-micro">Receita esperada</span>
+            <div class="folha-linha">
+              <span>Receita esperada</span>
               <strong>{{ resultado().receitaEsperada | reais }}</strong>
             </div>
-            <div class="indicador">
-              <span class="indicador-icone"><mat-icon>insights</mat-icon></span>
-              <span class="rotulo-micro">Resultado estimado</span>
+            <div class="folha-linha">
+              <span>Resultado estimado</span>
               <strong>{{ resultado().resultadoEstimado | reais }}</strong>
             </div>
           </div>
